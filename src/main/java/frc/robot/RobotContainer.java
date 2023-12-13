@@ -13,6 +13,7 @@ import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -79,6 +80,11 @@ public class RobotContainer {
                 .whileTrue(new RunCommand(
                         () -> m_robotDrive.setX(),
                         m_robotDrive));
+
+        new JoystickButton(m_driverController, 7)
+                .onTrue(new RunCommand(
+                        () -> m_robotDrive.zeroHeading(), 
+                        m_robotDrive));
     }
 
     /**
@@ -96,8 +102,12 @@ public class RobotContainer {
                         new FollowPath(autoPaths1.get(0), m_robotDrive),
                         autoPaths1.get(0).getMarkers(),
                         Constants.AutoConstants.AUTO_EVENT_MAP)
+        );  
 
-        );
+        Field2d m_Field2d = new Field2d();
+        SmartDashboard.putData(m_Field2d);
+
+        m_Field2d.getObject("traj").setTrajectory(autoPaths1.get(0));
 
         return autoTest;
     }
