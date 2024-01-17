@@ -1,8 +1,8 @@
 package frc.robot.Commands;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimelightHelpers;
 
 public class GetLimeLight extends Command {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
@@ -24,8 +24,7 @@ public class GetLimeLight extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double table = NetworkTableInstance.getDefault().getTable("limelight").getEntry("<variablename>").getDouble(0);
-        SmartDashboard.putNumber("table", table);
+        SmartDashboard.putBoolean("TV", LimelightHelpers.getTV("limelight"));
     }
 
     // Called once the command ends or is interrupted.
