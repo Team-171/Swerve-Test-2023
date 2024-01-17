@@ -4,11 +4,7 @@
 
 package frc.robot;
 
-import java.util.List;
-
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
@@ -18,9 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Commands.FollowPath;
+import frc.robot.Commands.GetLimeLight;
+import frc.robot.Commands.ZeroHeading;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -34,7 +30,7 @@ public class RobotContainer {
     // The robot's subsystems
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-    private SendableChooser<String> autoChooser;
+    private final SendableChooser<Command> autoChooser;
 
     // The driver's controller
     XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -46,10 +42,10 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-        autoChooser = new SendableChooser<>();
-        autoChooser.setDefaultOption("Straight Line", "StraightLine");
-        autoChooser.addOption("New Path", "New Path");
-        SmartDashboard.putData(autoChooser);
+        autoChooser = AutoBuilder.buildAutoChooser("Straight");
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        SmartDashboard.putData("Get Limelight Data", new GetLimeLight());
 
         // m_robotDrive.resetEncoders();
 
@@ -82,9 +78,7 @@ public class RobotContainer {
                         m_robotDrive));
 
         new JoystickButton(m_driverController, 7)
-                .onTrue(new RunCommand(
-                        () -> m_robotDrive.zeroHeading(), 
-                        m_robotDrive));
+                .onTrue(new ZeroHeading(m_robotDrive));
     }
 
     /**
@@ -93,7 +87,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        List<PathPlannerTrajectory> autoPaths1 = PathPlanner.loadPathGroup(autoChooser.getSelected(),
+        Field2d m_Field2d = new Field2d();
+        SmartDashboard.putData(m_Field2d);
+
+        /* List<PathPlannerTrajectory> autoPaths1 = PathPlanner.loadPathGroup(autoChooser.getSelected(),
                 Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                 Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
 
@@ -102,13 +99,13 @@ public class RobotContainer {
                         new FollowPath(autoPaths1.get(0), m_robotDrive),
                         autoPaths1.get(0).getMarkers(),
                         Constants.AutoConstants.AUTO_EVENT_MAP)
-        );  
+        );
 
-        Field2d m_Field2d = new Field2d();
-        SmartDashboard.putData(m_Field2d);
 
         m_Field2d.getObject("traj").setTrajectory(autoPaths1.get(0));
 
-        return autoTest;
+        return autoTest; */
+
+        return autoChooser.getSelected();
     }
 }

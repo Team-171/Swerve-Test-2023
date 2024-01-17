@@ -1,83 +1,30 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "ADIS16470[0]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [10]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [12]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [13]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [14]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [15]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [16]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [17]": {
-        "header": {
-          "open": true
-        }
-      },
-      "window": {
-        "visible": false
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
-      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/SendableChooser[0]": "String Chooser"
+      "/SmartDashboard/Get Limelight Data": "Command"
     },
     "windows": {
-      "/LiveWindow/Ungrouped/navX-Sensor[4]": {
+      "/SmartDashboard/Auto Chooser": {
         "window": {
           "visible": true
         }
       },
       "/SmartDashboard/Field": {
-        "Robot": {
-          "length": 0.6858000159263611,
-          "selectable": false,
-          "style": "Box/Image"
-        },
+        "bottom": 544,
+        "builtin": "2024 Crescendo",
         "height": 8.013679504394531,
-        "image": "C:\\Users\\First Team 171\\Downloads\\2023-field.png",
-        "units": "feet",
+        "left": 46,
+        "right": 1088,
+        "top": 36,
         "width": 16.541748046875,
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/SendableChooser[0]": {
+      "/SmartDashboard/Get Limelight Data": {
         "window": {
           "visible": true
         }
@@ -85,19 +32,42 @@
     }
   },
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "retained": {
       "SmartDashboard": {
-        "SendableChooser[0]": {
+        "Get Limelight Data": {
           "open": true
         },
         "open": true
       }
+    },
+    "transitory": {
+      "FMSInfo": {
+        "open": true
+      },
+      "SmartDashboard": {
+        "open": true
+      }
     }
   },
-  "NetworkTables View": {
-    "visible": false
+  "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
+    "shuffleboard@1": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "visible": true
   }
 }
