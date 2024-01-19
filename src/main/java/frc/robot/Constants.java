@@ -122,9 +122,24 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
+  public static final class ButtonConstants {
+    public static final int RightBumper = 6;
+    public static final int LeftBumper = 5;
+    public static final int ButtonB = 2;
+    public static final int ButtonSelect = 7;
+  }
+
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.25;
+    public static final double kDriveDeadband = 0.15;
+  }
+
+  public static final class LimelightConstants {
+    public static final double kUpperTolerance = 2.0;
+    public static final double kLowerTolerance = -2.0;
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 
   public static final class AutoConstants {

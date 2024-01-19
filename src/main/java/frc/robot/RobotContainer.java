@@ -15,8 +15,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Commands.AimAndShoot;
 import frc.robot.Commands.GetLimeLight;
 import frc.robot.Commands.ZeroHeading;
+import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -77,8 +79,11 @@ public class RobotContainer {
                         () -> m_robotDrive.setX(),
                         m_robotDrive));
 
-        new JoystickButton(m_driverController, 7)
+        new JoystickButton(m_driverController, ButtonConstants.ButtonSelect)       //select button
                 .onTrue(new ZeroHeading(m_robotDrive));
+
+        new JoystickButton(m_driverController, ButtonConstants.LeftBumper)
+                .whileTrue(new AimAndShoot(m_robotDrive));
     }
 
     /**
