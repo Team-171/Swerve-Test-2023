@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.AimAndShoot;
-import frc.robot.Commands.GetLimeLight;
 import frc.robot.Commands.ZeroHeading;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.OIConstants;
@@ -47,7 +46,6 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Straight");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
-        SmartDashboard.putData("Get Limelight Data", new GetLimeLight());
 
         // m_robotDrive.resetEncoders();
 
@@ -84,6 +82,8 @@ public class RobotContainer {
 
         new JoystickButton(m_driverController, ButtonConstants.LeftBumper)
                 .whileTrue(new AimAndShoot(m_robotDrive));
+
+
     }
 
     /**

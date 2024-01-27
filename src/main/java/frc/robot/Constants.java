@@ -169,4 +169,30 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  public static final class AprilTagIds {
+    public static final double sourceBlueRight = 1;
+    public static final double sourceBlueLeft = 2;
+    public static final double speakerRedRight = 3;
+    public static final double speakerRedLeft = 4;
+    public static final double ampRed = 5;
+    public static final double ampBlue = 6;
+    public static final double speakerBlueRight = 7;
+    public static final double speakerBlueLeft = 8;
+    public static final double sourceRedRight = 9;
+    public static final double sourceRedLeft = 10;
+    public static final double stageRedOne = 11;
+    public static final double stageRedTwo = 12;
+    public static final double stageRedThree = 13;
+    public static final double stageBlueOne = 14;
+    public static final double stageBlueTwo = 15;
+    public static final double stageBlueThree = 16;
+  }
+
+  public static final class AprilTagHeights {
+    public static final double source = 48.126;
+    public static final double amp = 50.13;
+    public static final double speaker = 53.88;
+    public static final double stage = 48.841;
+  }
+
 }

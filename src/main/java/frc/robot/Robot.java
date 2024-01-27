@@ -4,12 +4,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.AprilTagHeights;
+import frc.robot.Constants.AprilTagIds;
+import frc.robot.Constants.AprilTagIds.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -46,6 +48,32 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("TV", LimelightHelpers.getTV("limelight"));
     SmartDashboard.putNumber("TX", LimelightHelpers.getTX("limelight"));
     SmartDashboard.putNumber("id", NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(-1));
+    SmartDashboard.putNumber("TA", LimelightHelpers.getTA("limelight"));
+    SmartDashboard.putNumber("TY", LimelightHelpers.getTY("limelight"));
+
+    double targetOffsetAngle_Vertical = LimelightHelpers.getTY("limelight");
+    double limelightMountAngleDegrees = 13.0;
+    double limelightLensHeightInches = 5.875;
+    double goalHeightInches;
+    double id = LimelightHelpers.getFiducialID("limelight");
+    if(id == AprilTagIds.stageBlueOne || id == AprilTagIds.stageBlueTwo || id == AprilTagIds.stageBlueThree){
+      goalHeightInches = AprilTagHeights.stage;
+    }else if(id == AprilTagIds.speakerBlueLeft || id == AprilTagIds.speakerBlueRight || id == AprilTagIds.speakerRedLeft || id == AprilTagIds.speakerRedRight){
+      goalHeightInches = AprilTagHeights.speaker;
+    }else if(id == AprilTagIds.sourceBlueRight || id == AprilTagIds.sourceBlueLeft || id == AprilTagIds.sourceRedLeft || id == AprilTagIds.sourceRedRight){
+      goalHeightInches = AprilTagHeights.source;
+    }else if(id == AprilTagIds.ampBlue || id == AprilTagIds.ampRed){
+      goalHeightInches = AprilTagHeights.amp;
+    }else{
+      goalHeightInches = 0;
+    }
+    double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+    double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
+    double distanceToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+    SmartDashboard.putNumber("Distance to wall", distanceToGoalInches);
+
+    double distanceToTagInches = Math.sqrt(Math.pow(goalHeightInches - limelightLensHeightInches, 2) + Math.pow(distanceToGoalInches, 2));
+    SmartDashboard.putNumber("Distance to tag", distanceToTagInches);
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
