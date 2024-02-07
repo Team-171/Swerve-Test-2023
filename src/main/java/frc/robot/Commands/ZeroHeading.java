@@ -1,19 +1,19 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 public class ZeroHeading extends Command {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     
-    private DriveSubsystem subsystem;
+    private SwerveSubsystem subsystem;
 
     /**
      * Follows a given trajectory for autonomous.
      * @param trajectory Trajectory to follow
      * @param subsystem Drive subsystem to drive the robot
      */
-    public ZeroHeading(DriveSubsystem subsystem) {
+    public ZeroHeading(SwerveSubsystem subsystem) {
         this.subsystem = subsystem;
 
         // Use addRequirements() here to declare subsystem dependencies.

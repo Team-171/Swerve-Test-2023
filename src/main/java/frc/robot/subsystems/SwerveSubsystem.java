@@ -3,18 +3,24 @@ package frc.robot.subsystems;
 import java.io.File;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
+import swervelib.SwerveDriveTest;
+import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -26,10 +32,14 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveSubsystem(File directory) {
 
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+        double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(12.8);
+        double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
         try {
             swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
+            //swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
         } catch (Exception e) {
-            
+            System.out.println(e.getMessage());
+            throw new RuntimeException();
         }
         swerveDrive.setHeadingCorrection(false);
         swerveDrive.setCosineCompensator(SwerveDriveTelemetry.isSimulation);
@@ -62,6 +72,25 @@ public class SwerveSubsystem extends SubsystemBase {
                 },
                 this // Reference to this subsystem to set requirements
         );
+    }
+
+    /**
+   * Get the path follower with events.
+   *
+   * @param pathName       PathPlanner path name.
+   * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
+   */
+  public Command getAutonomousCommand(String pathName)
+  {
+    // Create a path following command using AutoBuilder. This will also trigger event markers.
+    return new PathPlannerAuto(pathName);
+  }
+
+    /**
+   * Sets the wheels into an X formation to prevent movement.
+   */
+    public void lock() {
+        swerveDrive.lockPose();
     }
 
     public Pose2d getPose(){

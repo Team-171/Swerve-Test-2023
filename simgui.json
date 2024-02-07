@@ -4,7 +4,8 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/Get Limelight Data": "Command"
+      "/SmartDashboard/Get Limelight Data": "Command",
+      "/SmartDashboard/Pigeon 2 (v6) [13]": "Gyro"
     },
     "windows": {
       "/SmartDashboard/Auto Chooser": {

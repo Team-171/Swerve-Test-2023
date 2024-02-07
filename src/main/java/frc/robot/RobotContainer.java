@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import java.io.File;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -20,7 +23,7 @@ import frc.robot.Commands.AimAndShoot;
 import frc.robot.Commands.ZeroHeading;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.DriveSubsystem;
+//import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /*
@@ -31,10 +34,10 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class RobotContainer {
         // The robot's subsystems
-        private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-        private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem(null);
+        //private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+        private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
-        private final SendableChooser<Command> autoChooser;
+        private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
         // The driver's controller
         XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -46,40 +49,23 @@ public class RobotContainer {
                 // Configure the button bindings
                 configureButtonBindings();
 
-                autoChooser = AutoBuilder.buildAutoChooser("Straight");
+                // add options to the autochooser here
+                autoChooser.setDefaultOption("Straight", m_SwerveSubsystem.getAutonomousCommand("Straight"));
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
                 // m_robotDrive.resetEncoders();
 
                 // Configure default commands
                 m_SwerveSubsystem.setDefaultCommand(
-                                // The left stick controls translation of the robot.
-                                // Turning is controlled by the X axis of the right stick.
-                                /*
-                                 * new RunCommand(
-                                 * () -> m_robotDrive.drive(
-                                 * -MathUtil.applyDeadband(m_driverController.getLeftY(),
-                                 * OIConstants.kDriveDeadband),
-                                 * -MathUtil.applyDeadband(m_driverController.getLeftX(),
-                                 * OIConstants.kDriveDeadband),
-                                 * -MathUtil.applyDeadband(m_driverController.getRightX(),
-                                 * OIConstants.kDriveDeadband),
-                                 * true, true),
-                                 * m_robotDrive));
-                                 */
-                                new RunCommand(
-                                        () -> m_SwerveSubsystem.drive(
-                                                        new Translation2d(-MathUtil.applyDeadband(
-                                                                        m_driverController.getLeftY(),
-                                                                        OIConstants.kDriveDeadband),
-                                                                        -MathUtil.applyDeadband(
-                                                                                        m_driverController
-                                                                                                        .getLeftX(),
-                                                                                        OIConstants.kDriveDeadband)),
-                                                        -MathUtil.applyDeadband(m_driverController.getRightX(),
-                                                                        OIConstants.kDriveDeadband),
-                                                        true),
-                                        m_SwerveSubsystem));
+                        // The left stick controls translation of the robot.
+                        // Turning is controlled by the X axis of the right stick.
+                        new RunCommand(
+                                () -> m_SwerveSubsystem.drive(
+                                        new Translation2d(-MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                                                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband)),
+                                                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                                                true),
+                                m_SwerveSubsystem));
         }
 
         /**
@@ -94,14 +80,14 @@ public class RobotContainer {
         private void configureButtonBindings() {
                 new JoystickButton(m_driverController, Button.kR1.value)
                                 .whileTrue(new RunCommand(
-                                                () -> m_robotDrive.setX(),
-                                                m_robotDrive));
+                                                () -> m_SwerveSubsystem.lock(),
+                                                m_SwerveSubsystem));
 
-                new JoystickButton(m_driverController, ButtonConstants.ButtonSelect) // select button
-                                .onTrue(new ZeroHeading(m_robotDrive));
+                new JoystickButton(m_driverController, ButtonConstants.ButtonSelect)
+                                .onTrue(new ZeroHeading(m_SwerveSubsystem));
 
                 new JoystickButton(m_driverController, ButtonConstants.LeftBumper)
-                                .whileTrue(new AimAndShoot(m_robotDrive));
+                                .whileTrue(new AimAndShoot(m_SwerveSubsystem));
 
         }
 
