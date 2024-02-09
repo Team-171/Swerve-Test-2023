@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.io.File;
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -10,12 +11,11 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
@@ -32,11 +32,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveSubsystem(File directory) {
 
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
-        double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(12.8);
-        double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
         try {
             swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
-            //swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new RuntimeException();
@@ -115,6 +112,19 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative){
         swerveDrive.drive(translation,rotation,fieldRelative,false);
+        
+    }
+
+    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
+    {
+        return run(() -> {
+        // Make the robot move
+        swerveDrive.drive(new Translation2d(translationX.getAsDouble() * swerveDrive.getMaximumVelocity(),
+                                            translationY.getAsDouble() * swerveDrive.getMaximumVelocity()),
+                            angularRotationX.getAsDouble() * swerveDrive.getMaximumAngularVelocity(),
+                            true,
+                            false);
+        });
     }
 
     public void zeroHeading(){

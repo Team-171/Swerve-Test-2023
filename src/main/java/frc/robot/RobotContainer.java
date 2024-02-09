@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.AimAndShoot;
 import frc.robot.Commands.ZeroHeading;
 import frc.robot.Constants.ButtonConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 //import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -51,6 +52,7 @@ public class RobotContainer {
 
                 // add options to the autochooser here
                 autoChooser.setDefaultOption("Straight", m_SwerveSubsystem.getAutonomousCommand("Straight"));
+                autoChooser.addOption("Squiggle", m_SwerveSubsystem.getAutonomousCommand("Squiggle"));
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
                 // m_robotDrive.resetEncoders();
@@ -61,11 +63,12 @@ public class RobotContainer {
                         // Turning is controlled by the X axis of the right stick.
                         new RunCommand(
                                 () -> m_SwerveSubsystem.drive(
-                                        new Translation2d(-MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                                                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband)),
-                                                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                                        new Translation2d(-MathUtil.applyDeadband(m_driverController.getLeftY() * 2, OIConstants.kDriveDeadband),
+                                                -MathUtil.applyDeadband(m_driverController.getLeftX() * 2, OIConstants.kDriveDeadband)),
+                                                -MathUtil.applyDeadband(m_driverController.getRightX() * 2, OIConstants.kDriveDeadband),
                                                 true),
                                 m_SwerveSubsystem));
+        
         }
 
         /**
