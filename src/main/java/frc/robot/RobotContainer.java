@@ -68,6 +68,12 @@ public class RobotContainer {
                                                 -MathUtil.applyDeadband(m_driverController.getRightX() * 2, OIConstants.kDriveDeadband),
                                                 true),
                                 m_SwerveSubsystem));
+                        /* new RunCommand(
+                                () -> m_SwerveSubsystem.drive(
+                                        new Translation2d(0.5,0),
+                                        0,
+                                        true
+                                ), m_SwerveSubsystem)); */
         
         }
 
