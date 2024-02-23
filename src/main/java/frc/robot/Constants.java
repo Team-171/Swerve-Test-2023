@@ -59,13 +59,13 @@ public final class Constants {
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 4;
-    public static final int kRearLeftDrivingCanId = 2;
+    public static final int kRearLeftDrivingCanId = 6;
     public static final int kFrontRightDrivingCanId = 8;
-    public static final int kRearRightDrivingCanId = 6;
+    public static final int kRearRightDrivingCanId = 2;
 
-    public static final int kFrontLeftTurningCanId = 5;
-    public static final int kRearLeftTurningCanId = 3;
-    public static final int kFrontRightTurningCanId = 9;
+    public static final int kFrontLeftTurningCanId = 9;
+    public static final int kRearLeftTurningCanId = 5;
+    public static final int kFrontRightTurningCanId = 3;
     public static final int kRearRightTurningCanId = 7;
 
     public static final boolean kGyroReversed = true;
@@ -118,7 +118,7 @@ public final class Constants {
     public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
     public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
 
-    public static final int kDrivingMotorCurrentLimit = 50; // amps
+    public static final int kDrivingMotorCurrentLimit = 70; // amps
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
@@ -193,6 +193,12 @@ public final class Constants {
     public static final double amp = 50.13;
     public static final double speaker = 53.88;
     public static final double stage = 48.841;
+  }
+
+  public static final class ArmConstants {
+    public static final double lowStop = 0;
+    public static final double highStop = 0;
+    public static final double speed = 0.5;
   }
 
 }

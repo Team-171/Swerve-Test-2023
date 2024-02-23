@@ -16,9 +16,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.AimAndShoot;
+import frc.robot.Commands.Index;
+import frc.robot.Commands.Intake;
 import frc.robot.Commands.ZeroHeading;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -32,6 +35,7 @@ public class RobotContainer {
         // The robot's subsystems
         private final DriveSubsystem m_robotDrive = new DriveSubsystem();
         private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+        private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
 
         private final SendableChooser<Command> autoChooser;
 
@@ -65,11 +69,11 @@ public class RobotContainer {
                                                                 true, true),
                                                 m_robotDrive));
 
-                m_IntakeSubsystem.setDefaultCommand(
-                                new RunCommand(() -> m_IntakeSubsystem.moveRoller(
-                                                -MathUtil.applyDeadband(m_driverController.getLeftTriggerAxis(),
-                                                                OIConstants.kDriveDeadband)),
-                                                m_IntakeSubsystem));
+                m_ArmSubsystem.setDefaultCommand(
+                                new RunCommand(() -> m_ArmSubsystem.moveArm(
+                                                -MathUtil.applyDeadband(m_driverController.getRightTriggerAxis(),
+                                                                OIConstants.kDriveDeadband), -MathUtil.applyDeadband(m_driverController.getLeftTriggerAxis(), OIConstants.kDriveDeadband)),
+                                                m_ArmSubsystem));
         }
 
         /**
@@ -82,7 +86,7 @@ public class RobotContainer {
          * {@link JoystickButton}.
          */
         private void configureButtonBindings() {
-                new JoystickButton(m_driverController, Button.kR1.value)
+                new JoystickButton(m_driverController, XboxController.Button.kX.value)
                                 .whileTrue(new RunCommand(
                                                 () -> m_robotDrive.setX(),
                                                 m_robotDrive));
@@ -90,9 +94,20 @@ public class RobotContainer {
                 new JoystickButton(m_driverController, ButtonConstants.ButtonSelect) // select button
                                 .onTrue(new ZeroHeading(m_robotDrive));
 
-                new JoystickButton(m_driverController, ButtonConstants.LeftBumper)
+                new JoystickButton(m_driverController, XboxController.Button.kA.value)
                                 .whileTrue(new AimAndShoot(m_robotDrive));
 
+                new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
+                                .whileTrue(new Intake(m_IntakeSubsystem, 1))
+                                .whileFalse(new Intake(m_IntakeSubsystem, 0));
+
+                new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+                                .whileTrue(new Intake(m_IntakeSubsystem, 1))
+                                .whileFalse(new Intake(m_IntakeSubsystem, 0));
+
+                new JoystickButton(m_driverController, XboxController.Button.kY.value)
+                                .whileTrue(new Index(m_ArmSubsystem, -1))
+                                .whileFalse(new Index(m_ArmSubsystem, 0));
         }
 
         /**
@@ -103,7 +118,6 @@ public class RobotContainer {
         public Command getAutonomousCommand() {
                 Field2d m_Field2d = new Field2d();
                 SmartDashboard.putData(m_Field2d);
-                
 
                 /*
                  * List<PathPlannerTrajectory> autoPaths1 =

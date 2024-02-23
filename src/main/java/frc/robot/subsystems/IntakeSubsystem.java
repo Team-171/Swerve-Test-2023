@@ -27,8 +27,8 @@ public class IntakeSubsystem extends SubsystemBase {
   */
   public IntakeSubsystem() {
     // Creates a roller for intake
-    rollersMotor = new CANSparkMax(10, MotorType.kBrushless);
-    rollersMotor2 = new CANSparkMax(11, MotorType.kBrushless);
+    rollersMotor = new CANSparkMax(13, MotorType.kBrushless);
+    rollersMotor2 = new CANSparkMax(14, MotorType.kBrushless);
 
     // Resets to default, always do before changing config
     rollersMotor.restoreFactoryDefaults();

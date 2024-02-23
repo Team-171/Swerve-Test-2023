@@ -78,6 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     SmartDashboard.putData(m_field);
+    SmartDashboard.putData(m_gyro);
     
     AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
