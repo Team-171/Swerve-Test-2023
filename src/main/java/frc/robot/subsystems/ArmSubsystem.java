@@ -25,7 +25,6 @@ public class ArmSubsystem extends SubsystemBase {
   DutyCycleEncoder encoder;
   double setPower;
   double setPoint;
-  CANSparkMax indexer;
 
   /** 
    * Creates a new IntakeRollersSubsystem.
@@ -33,10 +32,9 @@ public class ArmSubsystem extends SubsystemBase {
   */
   public ArmSubsystem() {
     // Creates a roller for intake
-    armMotor = new CANSparkMax(10, MotorType.kBrushless);
-    armMotor2 = new CANSparkMax(11, MotorType.kBrushless);
+    armMotor = new CANSparkMax(13, MotorType.kBrushless);
+    armMotor2 = new CANSparkMax(14, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(9);
-    indexer = new CANSparkMax(12, MotorType.kBrushless);
 
     pid = new PIDController(7, 0.1, 0.1);
 
@@ -47,11 +45,9 @@ public class ArmSubsystem extends SubsystemBase {
     // Resets to default, always do before changing config
     armMotor.restoreFactoryDefaults();
     armMotor2.restoreFactoryDefaults();
-    indexer.restoreFactoryDefaults();
 
     armMotor.setClosedLoopRampRate(0.125);
     armMotor2.setClosedLoopRampRate(0.125);
-    indexer.setClosedLoopRampRate(0.125);
 
     armMotor2.setInverted(true);
   }
@@ -89,10 +85,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     //Speaker - 0.35
     //down - 0.56
-  }
-
-  public void index(double speed){
-    indexer.set(speed);
   }
 
   /**

@@ -2,11 +2,12 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.RollersSubsystem;
 
 public class Index extends Command {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     
-    private ArmSubsystem subsystem;
+    private RollersSubsystem subsystem;
     private double speed;
 
     /**
@@ -14,7 +15,7 @@ public class Index extends Command {
      * @param trajectory Trajectory to follow
      * @param subsystem Drive subsystem to drive the robot
      */
-    public Index(ArmSubsystem subsystem, double speed) {
+    public Index(RollersSubsystem subsystem, double speed) {
         this.subsystem = subsystem;
         this.speed = speed;
 

@@ -1,12 +1,12 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RollersSubsystem;
 
-public class Intake extends Command {
+public class Rollers extends Command {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     
-    private IntakeSubsystem subsystem;
+    private RollersSubsystem subsystem;
     private double speed;
 
     /**
@@ -14,7 +14,7 @@ public class Intake extends Command {
      * @param trajectory Trajectory to follow
      * @param subsystem Drive subsystem to drive the robot
      */
-    public Intake(IntakeSubsystem subsystem, double speed) {
+    public Rollers(RollersSubsystem subsystem, double speed) {
         this.subsystem = subsystem;
         this.speed = speed;
 

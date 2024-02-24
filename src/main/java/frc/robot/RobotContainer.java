@@ -17,13 +17,13 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.AimAndShoot;
 import frc.robot.Commands.Index;
-import frc.robot.Commands.Intake;
+import frc.robot.Commands.Rollers;
 import frc.robot.Commands.ZeroHeading;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RollersSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -34,7 +34,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class RobotContainer {
         // The robot's subsystems
         private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-        private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+        private final RollersSubsystem m_IntakeSubsystem = new RollersSubsystem();
         private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
 
         private final SendableChooser<Command> autoChooser;
@@ -98,16 +98,19 @@ public class RobotContainer {
                                 .whileTrue(new AimAndShoot(m_robotDrive));
 
                 new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-                                .whileTrue(new Intake(m_IntakeSubsystem, 1))
-                                .whileFalse(new Intake(m_IntakeSubsystem, 0));
+                                .whileTrue(new Rollers(m_IntakeSubsystem, -1))
+                                .whileFalse(new Rollers(m_IntakeSubsystem, 0));
 
                 new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-                                .whileTrue(new Intake(m_IntakeSubsystem, 1))
-                                .whileFalse(new Intake(m_IntakeSubsystem, 0));
+                                .whileTrue(new Rollers(m_IntakeSubsystem, 1))
+                                .whileFalse(new Rollers(m_IntakeSubsystem, 0));
 
                 new JoystickButton(m_driverController, XboxController.Button.kY.value)
-                                .whileTrue(new Index(m_ArmSubsystem, -1))
-                                .whileFalse(new Index(m_ArmSubsystem, 0));
+                                .whileTrue(new Index(m_IntakeSubsystem, -1))
+                                .whileFalse(new Index(m_IntakeSubsystem, 0));
+
+                new JoystickButton(m_driverController, XboxController.Button.kB.value)
+                                .onTrue(AutoBuilder.buildAuto("Straight"));
         }
 
         /**
