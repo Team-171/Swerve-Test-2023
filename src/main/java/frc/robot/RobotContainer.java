@@ -21,9 +21,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.AimAndShoot;
 import frc.robot.Commands.ZeroHeading;
-import frc.robot.Constants.ButtonConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.*;
 //import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -36,7 +34,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
         // The robot's subsystems
         //private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-        private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
+        private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
         private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
