@@ -201,4 +201,15 @@ public final class Constants {
     public static final double speed = 0.5;
   }
 
+  public static final class LEDConstants {
+    public static final double rainbowWithGlitter = -0.89;
+    public static final double heartbeatFastColor1 = 0.27;
+    public static final double cheese = 0.67;
+    public static final double twinkleColor1Color2 = 0.49;
+    public static final double colorGradient = 0.41;
+    public static final double larsonScanner = -0.33;
+    public static final double fixedStrobeGold = -0.07;
+
+  }
+
 }

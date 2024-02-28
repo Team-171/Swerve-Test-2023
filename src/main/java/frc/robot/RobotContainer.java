@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,6 +21,7 @@ import frc.robot.Commands.ZeroHeading;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.RollersSubsystem;
 
@@ -36,8 +36,10 @@ public class RobotContainer {
         private final DriveSubsystem m_robotDrive = new DriveSubsystem();
         private final RollersSubsystem m_IntakeSubsystem = new RollersSubsystem();
         private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
+        private final LedSubsystem m_ChangeLedSubsystem = new LedSubsystem();
 
         private final SendableChooser<Command> autoChooser;
+        public final SendableChooser<Double> ledChooser = new SendableChooser<Double>();
 
         // The driver's controller
         XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -51,6 +53,15 @@ public class RobotContainer {
 
                 autoChooser = AutoBuilder.buildAutoChooser("Straight");
                 SmartDashboard.putData("Auto Chooser", autoChooser);
+
+                ledChooser.setDefaultOption("Rainbow", Constants.LEDConstants.rainbowWithGlitter);
+                ledChooser.addOption("Twinkles", Constants.LEDConstants.twinkleColor1Color2);
+                ledChooser.addOption("Cheese", Constants.LEDConstants.cheese);
+                ledChooser.addOption("Heartbeat", Constants.LEDConstants.heartbeatFastColor1);
+                ledChooser.addOption("Color Gradient", Constants.LEDConstants.colorGradient);
+                ledChooser.addOption("Larson Scanner", Constants.LEDConstants.larsonScanner);
+                ledChooser.addOption("Strobe", Constants.LEDConstants.fixedStrobeGold);
+                SmartDashboard.putData(ledChooser);
 
                 // m_robotDrive.resetEncoders();
 
@@ -72,8 +83,15 @@ public class RobotContainer {
                 m_ArmSubsystem.setDefaultCommand(
                                 new RunCommand(() -> m_ArmSubsystem.moveArm(
                                                 -MathUtil.applyDeadband(m_driverController.getRightTriggerAxis(),
-                                                                OIConstants.kDriveDeadband), -MathUtil.applyDeadband(m_driverController.getLeftTriggerAxis(), OIConstants.kDriveDeadband)),
+                                                                OIConstants.kDriveDeadband),
+                                                -MathUtil.applyDeadband(m_driverController.getLeftTriggerAxis(),
+                                                                OIConstants.kDriveDeadband)),
                                                 m_ArmSubsystem));
+
+                m_ChangeLedSubsystem.setDefaultCommand(
+                                new RunCommand(() -> m_ChangeLedSubsystem.changeColor(ledChooser.getSelected()),
+                                                m_ChangeLedSubsystem));
+
         }
 
         /**
@@ -108,9 +126,6 @@ public class RobotContainer {
                 new JoystickButton(m_driverController, XboxController.Button.kY.value)
                                 .whileTrue(new Index(m_IntakeSubsystem, -1))
                                 .whileFalse(new Index(m_IntakeSubsystem, 0));
-
-                new JoystickButton(m_driverController, XboxController.Button.kB.value)
-                                .onTrue(AutoBuilder.buildAuto("Straight"));
         }
 
         /**
