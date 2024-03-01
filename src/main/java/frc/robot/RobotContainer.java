@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,15 +16,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.AimAndShoot;
+import frc.robot.Commands.CorrectTurning;
 import frc.robot.Commands.Index;
+import frc.robot.Commands.IntakeAndRollers;
 import frc.robot.Commands.Rollers;
 import frc.robot.Commands.ZeroHeading;
 import frc.robot.Constants.ButtonConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.RollersSubsystem;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -34,9 +41,13 @@ import frc.robot.subsystems.RollersSubsystem;
 public class RobotContainer {
         // The robot's subsystems
         private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-        private final RollersSubsystem m_IntakeSubsystem = new RollersSubsystem();
+        private final RollersSubsystem m_RollersSubsystem = new RollersSubsystem();
         private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
         private final LedSubsystem m_ChangeLedSubsystem = new LedSubsystem();
+        private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+        //private final PIDController driveTurnPID = new PIDController(ModuleConstants.kTurningP, ModuleConstants.kTurningI, ModuleConstants.kTurningD);
+        //static double theta = 0;
+        
 
         private final SendableChooser<Command> autoChooser;
         public final SendableChooser<Double> ledChooser = new SendableChooser<Double>();
@@ -63,6 +74,8 @@ public class RobotContainer {
                 ledChooser.addOption("Strobe", Constants.LEDConstants.fixedStrobeGold);
                 SmartDashboard.putData(ledChooser);
 
+                //theta = m_robotDrive.getDegrees();
+
                 // m_robotDrive.resetEncoders();
 
                 // Configure default commands
@@ -79,6 +92,25 @@ public class RobotContainer {
                                                                                 OIConstants.kDriveDeadband),
                                                                 true, true),
                                                 m_robotDrive));
+
+                /*m_robotDrive.setDefaultCommand(
+                                new RunCommand(() -> 
+                                { 
+                                        double leftY = -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband);
+                                        double leftX = -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband);
+                                        double rightX = -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband);
+                                        double turnInput = 0;
+                                        // if recieving joystick input drive normally
+                                        if (rightX != 0) {
+                                                theta = m_robotDrive.getDegrees();
+                                                turnInput = rightX;
+                                        } 
+                                        // else maintain heading
+                                        else {
+                                                turnInput = driveTurnPID.calculate(m_robotDrive.getDegrees(), theta);
+                                        }
+                                        m_robotDrive.drive(leftY, leftX, turnInput, true, true);
+                                }, m_robotDrive)); */
 
                 m_ArmSubsystem.setDefaultCommand(
                                 new RunCommand(() -> m_ArmSubsystem.moveArm(
@@ -116,16 +148,17 @@ public class RobotContainer {
                                 .whileTrue(new AimAndShoot(m_robotDrive));
 
                 new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-                                .whileTrue(new Rollers(m_IntakeSubsystem, -1))
-                                .whileFalse(new Rollers(m_IntakeSubsystem, 0));
+                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, -1))
+                                .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem,  0));
 
                 new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-                                .whileTrue(new Rollers(m_IntakeSubsystem, 1))
-                                .whileFalse(new Rollers(m_IntakeSubsystem, 0));
+                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, 1))
+                                .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, 0));
 
                 new JoystickButton(m_driverController, XboxController.Button.kY.value)
-                                .whileTrue(new Index(m_IntakeSubsystem, -1))
-                                .whileFalse(new Index(m_IntakeSubsystem, 0));
+                                .whileTrue(new Index(m_RollersSubsystem, -1))
+                                .whileFalse(new Index(m_RollersSubsystem, 0));
+
         }
 
         /**

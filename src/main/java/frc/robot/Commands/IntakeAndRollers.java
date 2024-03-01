@@ -1,12 +1,14 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.RollersSubsystem;
 
-public class Rollers extends Command {
+public class IntakeAndRollers extends Command {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     
-    private RollersSubsystem subsystem;
+    private RollersSubsystem rollersSubsystem;
+    private IntakeSubsystem intakeSubsystem;
     private double speed;
 
     /**
@@ -14,12 +16,13 @@ public class Rollers extends Command {
      * @param trajectory Trajectory to follow
      * @param subsystem Drive subsystem to drive the robot
      */
-    public Rollers(RollersSubsystem subsystem, double speed) {
-        this.subsystem = subsystem;
+    public IntakeAndRollers(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem, double speed) {
+        this.rollersSubsystem = rollersSubsystem;
+        this.intakeSubsystem = intakeSubsystem;
         this.speed = speed;
 
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(subsystem);
+        addRequirements(rollersSubsystem, intakeSubsystem);
     }
 
     // Called when the command is initially scheduled.
@@ -31,13 +34,14 @@ public class Rollers extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        subsystem.moveRoller(speed);
+        intakeSubsystem.runIntake(speed);
+        rollersSubsystem.index(speed);
+        rollersSubsystem.moveRoller(speed);
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-    
     }
 
     // Returns true when the command should end.
