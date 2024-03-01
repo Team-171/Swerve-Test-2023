@@ -168,6 +168,7 @@ public class DriveSubsystem extends SubsystemBase {
     if (rateLimit) {
       // Convert XY to polar for rate limiting
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
+      SmartDashboard.putNumber("transdir", inputTranslationDir);
       double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
 
       // Calculate the direction slew rate based on an estimate of the lateral
@@ -182,9 +183,7 @@ public class DriveSubsystem extends SubsystemBase {
       double currentTime = WPIUtilJNI.now() * 1e-6;
       double elapsedTime = currentTime - m_prevTime;
       double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
-      //SmartDashboard.putNumber("Angledif12", angleDif);
-      Shuffleboard.getTab("Test")
-     .add("angledif", angleDif);
+      //SmartDashboard.putNumber("angledifference", angleDif);
       if (angleDif < 0.45 * Math.PI) {
         m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
             directionSlewRate * elapsedTime);
@@ -213,6 +212,7 @@ public class DriveSubsystem extends SubsystemBase {
       ySpeedCommanded = ySpeed;
       m_currentRotation = rot;
     }
+    
 
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
@@ -316,4 +316,5 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
+
 }
