@@ -40,11 +40,11 @@ public class AimAndShoot extends Command {
             {      // positive is to the right
                 if (LimelightConstants.kLowerTolerance > tx){   //if too far beneath tolerance
                     // turn right
-                    driveSubsystem.drive(0, 0, 5, true, true);
+                    driveSubsystem.drive(0, 0, 5, true, true, false);
                 }
                 else if (tx > LimelightConstants.kUpperTolerance){      //if too far above tolerance
                     // turn left
-                    driveSubsystem.drive(0, 0, -5, true, true);
+                    driveSubsystem.drive(0, 0, -5, true, true, false);
                 }
             }
             tx = LimelightHelpers.getTX("limelight");
@@ -56,7 +56,7 @@ public class AimAndShoot extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        driveSubsystem.drive(0, 0, 0, true, true);
+        driveSubsystem.drive(0, 0, 0, true, true, false);
     }
 
     // Returns true when the command should end.

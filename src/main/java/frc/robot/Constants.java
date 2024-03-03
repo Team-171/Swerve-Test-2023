@@ -196,8 +196,8 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final double lowStop = 0;
-    public static final double highStop = 0;
+    public static final double lowStop = 0.6;
+    public static final double highStop = 0.9;
     public static final double speed = 0.5;
   }
 

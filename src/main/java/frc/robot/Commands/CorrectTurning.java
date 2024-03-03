@@ -54,7 +54,7 @@ public class CorrectTurning extends Command {
         else{
             //turnInput = driveTurnPID.calculate(subsystem.getDegrees(), theta);
         }
-        subsystem.drive(xSpeedController, ySpeedController, turnInput, true, true);
+        subsystem.drive(xSpeedController, ySpeedController, turnInput, true, true, false);
     }
 
     // Called once the command ends or is interrupted.

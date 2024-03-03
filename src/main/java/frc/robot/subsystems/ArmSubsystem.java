@@ -36,7 +36,7 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor2 = new CANSparkMax(14, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(9);
 
-    pid = new PIDController(7, 0.1, 0.1);
+    pid = new PIDController(0.5, 0, 0);
 
     setPower = 0;
 
@@ -62,14 +62,17 @@ public class ArmSubsystem extends SubsystemBase {
 
     /* setPoint = MathUtil.clamp(speed + holdPosition, ArmConstants.lowStop, ArmConstants.highStop);
 
-    setPower = -MathUtil.clamp(pid.calculate(encoder.getAbsolutePosition(), setPoint), -ArmConstants.speed, ArmConstants.speed);
+    setPower = MathUtil.clamp(pid.calculate(encoder.getAbsolutePosition(), setPoint), -ArmConstants.speed, ArmConstants.speed);
     
     if (speed != 0){
         holdPosition = encoder.getAbsolutePosition();
-    } */
+    }
 
-      armMotor.set(speed);
-      armMotor2.set(speed);
+    armMotor.set(setPower);
+    armMotor2.set(setPower); */ 
+
+    armMotor.set(speed);
+    armMotor2.set(speed);
   }
 
   public boolean setPointArm(double position){

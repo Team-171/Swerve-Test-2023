@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,6 +46,7 @@ public class RobotContainer {
         private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
         private final LedSubsystem m_ChangeLedSubsystem = new LedSubsystem();
         private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+        private boolean slowmode;
         //private final PIDController driveTurnPID = new PIDController(ModuleConstants.kTurningP, ModuleConstants.kTurningI, ModuleConstants.kTurningD);
         //static double theta = 0;
         
@@ -64,6 +66,7 @@ public class RobotContainer {
 
                 autoChooser = AutoBuilder.buildAutoChooser("Straight");
                 SmartDashboard.putData("Auto Chooser", autoChooser);
+                slowmode = false;
 
                 ledChooser.setDefaultOption("Rainbow", Constants.LEDConstants.rainbowWithGlitter);
                 ledChooser.addOption("Twinkles", Constants.LEDConstants.twinkleColor1Color2);
@@ -90,7 +93,7 @@ public class RobotContainer {
                                                                                 OIConstants.kDriveDeadband),
                                                                 -MathUtil.applyDeadband(m_driverController.getRightX(),
                                                                                 OIConstants.kDriveDeadband),
-                                                                true, true),
+                                                                true, true, slowmode),
                                                 m_robotDrive));
 
                 /*m_robotDrive.setDefaultCommand(
@@ -148,17 +151,19 @@ public class RobotContainer {
                                 .whileTrue(new AimAndShoot(m_robotDrive));
 
                 new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, -1))
-                                .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem,  0));
+                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, -0.4, -0.5, -1))
+                                .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem,  0, 0, 0));
 
                 new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, 1))
-                                .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, 0));
+                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, 0.80, 0, 0))
+                                .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, 0, 0, 0));
 
                 new JoystickButton(m_driverController, XboxController.Button.kY.value)
                                 .whileTrue(new Index(m_RollersSubsystem, -1))
                                 .whileFalse(new Index(m_RollersSubsystem, 0));
-
+                new JoystickButton(m_driverController, XboxController.Button.kB.value)
+                                .whileTrue(new RunCommand(() -> slowmode = true))
+                                .whileFalse(new RunCommand(() -> slowmode = false));
         }
 
         /**

@@ -36,8 +36,8 @@ public class RollersSubsystem extends SubsystemBase {
     rollersMotor.restoreFactoryDefaults();
     rollersMotor2.restoreFactoryDefaults();
 
-    rollersMotor.setClosedLoopRampRate(0.125);
-    rollersMotor2.setClosedLoopRampRate(0.125);
+    rollersMotor.setClosedLoopRampRate(0.5);
+    rollersMotor2.setClosedLoopRampRate(0.5);
     indexer.setClosedLoopRampRate(0.125);
 
   }

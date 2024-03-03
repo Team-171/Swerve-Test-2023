@@ -9,17 +9,21 @@ public class IntakeAndRollers extends Command {
     
     private RollersSubsystem rollersSubsystem;
     private IntakeSubsystem intakeSubsystem;
-    private double speed;
+    private double indexSpeed;
+    private double rollerSpeed;
+    private double intakeSpeed;
 
     /**
      * Follows a given trajectory for autonomous.
      * @param trajectory Trajectory to follow
      * @param subsystem Drive subsystem to drive the robot
      */
-    public IntakeAndRollers(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem, double speed) {
+    public IntakeAndRollers(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem, double rollerSpeed, double indexSpeed, double intakeSpeed) {
         this.rollersSubsystem = rollersSubsystem;
         this.intakeSubsystem = intakeSubsystem;
-        this.speed = speed;
+        this.indexSpeed = indexSpeed;
+        this.rollerSpeed = rollerSpeed;
+        this.intakeSpeed = intakeSpeed;
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(rollersSubsystem, intakeSubsystem);
@@ -34,9 +38,9 @@ public class IntakeAndRollers extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        intakeSubsystem.runIntake(speed);
-        rollersSubsystem.index(speed);
-        rollersSubsystem.moveRoller(speed);
+        intakeSubsystem.runIntake(intakeSpeed);
+        rollersSubsystem.index(indexSpeed);
+        rollersSubsystem.moveRoller(rollerSpeed);
     }
 
     // Called once the command ends or is interrupted.
