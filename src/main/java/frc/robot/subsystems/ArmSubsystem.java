@@ -40,7 +40,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     setPower = 0;
 
-    holdPosition = encoder.getAbsolutePosition();
+    holdPosition = 0.708;
 
     // Resets to default, always do before changing config
     armMotor.restoreFactoryDefaults();
