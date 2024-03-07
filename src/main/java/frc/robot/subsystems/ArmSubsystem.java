@@ -41,7 +41,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     setPower = 0;
 
-
     // Resets to default, always do before changing config
     armMotor.restoreFactoryDefaults();
     armMotor2.restoreFactoryDefaults();
