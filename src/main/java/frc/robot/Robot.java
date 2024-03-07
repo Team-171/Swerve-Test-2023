@@ -50,17 +50,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putBoolean("TV", LimelightHelpers.getTV("limelight"));
+    /* SmartDashboard.putBoolean("TV", LimelightHelpers.getTV("limelight"));
     SmartDashboard.putNumber("TX", LimelightHelpers.getTX("limelight"));
     SmartDashboard.putNumber("id", NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(-1));
     SmartDashboard.putNumber("TA", LimelightHelpers.getTA("limelight"));
-    SmartDashboard.putNumber("TY", LimelightHelpers.getTY("limelight"));
+    SmartDashboard.putNumber("TY", LimelightHelpers.getTY("limelight")); */
+    SmartDashboard.putNumber("hold position periodic", m_robotContainer.m_ArmSubsystem.getHoldPosition());
+    SmartDashboard.putNumber("encoder periodic", m_robotContainer.m_ArmSubsystem.getEncoderPosition());
 
-    double targetOffsetAngle_Vertical = LimelightHelpers.getTY("limelight");
+    double targetOffsetAngle_Vertical = LimelightHelpers.getTY("limelight-april");
     double limelightMountAngleDegrees = 13.0;
     double limelightLensHeightInches = 5.875;
     double goalHeightInches;
-    double id = LimelightHelpers.getFiducialID("limelight");
+    double id = LimelightHelpers.getFiducialID("limelight-april");
     if(id == AprilTagIds.stageBlueOne || id == AprilTagIds.stageBlueTwo || id == AprilTagIds.stageBlueThree){
       goalHeightInches = AprilTagHeights.stage;
     }else if(id == AprilTagIds.speakerBlueLeft || id == AprilTagIds.speakerBlueRight || id == AprilTagIds.speakerRedLeft || id == AprilTagIds.speakerRedRight){

@@ -447,6 +447,10 @@ public class LimelightHelpers {
     /////
     /////
 
+    public static double getTargetID(String limelightName) {
+        return getLimelightNTDouble(limelightName, "tid");
+    }
+
     public static double getTX(String limelightName) {
         return getLimelightNTDouble(limelightName, "tx");
     }
@@ -590,6 +594,7 @@ public class LimelightHelpers {
         double[] poseArray = getLimelightNTDoubleArray(limelightName, "camerapose_robotspace");
         return toPose3D(poseArray);
     }
+
 
     /**
      * Gets the Pose2d for easy use with Odometry vision pose estimator

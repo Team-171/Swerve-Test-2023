@@ -69,6 +69,14 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 9;
 
     public static final boolean kGyroReversed = true;
+
+    public static final double kDriveTurnP = 0.04;
+    public static final double kDriveTurnI = 0;
+    public static final double kDriveTurnD = 0;
+
+    public static final double kHeadingP = 0.04;
+    public static final double kHeadingI = 0;
+    public static final double kHeadingD = 0;
   }
 
   public static final class ModuleConstants {
@@ -140,6 +148,12 @@ public final class Constants {
     public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double speakerLimelightHeight = 11.5;
+    public static final double speakerLimelightAngle = 38.5;
+    public static final double xOffset = 0; // right is positive
+    public static final double yOffset = 18;
+    public static final String limelightAprilHostName = "limelight-april";
+    public static final String limelightFloorHostName = "limelight-floor";
   }
 
   public static final class AutoConstants {
@@ -196,9 +210,24 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final double lowStop = 0.6;
-    public static final double highStop = 0.9;
-    public static final double speed = 0.5;
+    public static final double lowStop = 0.9;
+    public static final double highStop = 0.6;
+    public static final double speed = 1;
+    public static final double speakerPos = 0.8;
+  }
+
+  public static final class RollerConstants {
+    public static final double intakeRollerSpeed = -0.4;
+    public static final double outputRollerSpeed = 0.8;
+  }
+
+  
+  public static final class IndexConstants {
+    public static final double intakeIndexSpeed = -0.5;
+  }
+
+  public static final class IntakeConstants {
+    public static final double intakeSpeed = -1;
   }
 
   public static final class LEDConstants {

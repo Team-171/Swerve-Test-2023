@@ -25,6 +25,7 @@ public class ArmSubsystem extends SubsystemBase {
   DutyCycleEncoder encoder;
   double setPower;
   double setPoint;
+  boolean firstHoldPositionSet = false;
 
   /** 
    * Creates a new IntakeRollersSubsystem.
@@ -36,18 +37,20 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor2 = new CANSparkMax(14, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(9);
 
-    pid = new PIDController(0.5, 0, 0);
+    pid = new PIDController(20, 0, 0.01);
 
     setPower = 0;
 
-    holdPosition = encoder.getAbsolutePosition();
 
     // Resets to default, always do before changing config
     armMotor.restoreFactoryDefaults();
     armMotor2.restoreFactoryDefaults();
 
-    armMotor.setClosedLoopRampRate(0.125);
-    armMotor2.setClosedLoopRampRate(0.125);
+    armMotor.setSmartCurrentLimit(60);
+    armMotor2.setSmartCurrentLimit(60);
+
+    armMotor.setClosedLoopRampRate(0.1);
+    armMotor2.setClosedLoopRampRate(0.1);
 
     armMotor2.setInverted(true);
   }
@@ -57,29 +60,29 @@ public class ArmSubsystem extends SubsystemBase {
    * @param speed double Input from triggers / axis
    */
   public void moveArm(double speedRight, double speedLeft){
+    if (!firstHoldPositionSet){
+      holdPosition = encoder.getAbsolutePosition();
+      firstHoldPositionSet = true;
+    }
     double speed = speedRight - speedLeft;
-    speed = speed * 0.5;
+    speed = speed * .05;
 
-    /* setPoint = MathUtil.clamp(speed + holdPosition, ArmConstants.lowStop, ArmConstants.highStop);
+    setPoint = MathUtil.clamp(speed + holdPosition, ArmConstants.highStop, ArmConstants.lowStop);
 
     setPower = MathUtil.clamp(pid.calculate(encoder.getAbsolutePosition(), setPoint), -ArmConstants.speed, ArmConstants.speed);
     
     if (speed != 0){
         holdPosition = encoder.getAbsolutePosition();
     }
-
     armMotor.set(setPower);
-    armMotor2.set(setPower); */ 
-
-    armMotor.set(speed);
-    armMotor2.set(speed);
+    armMotor2.set(setPower); 
   }
 
   public boolean setPointArm(double position){
     setPoint = position;
     holdPosition = position;
 
-    setPower = -MathUtil.clamp(pid.calculate(encoder.getAbsolutePosition(), setPoint), -ArmConstants.speed, ArmConstants.speed);
+    setPower = MathUtil.clamp(pid.calculate(encoder.getAbsolutePosition(), setPoint), -ArmConstants.speed, ArmConstants.speed);
 
     armMotor.set(setPower);
     armMotor2.set(setPower);
@@ -88,6 +91,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     //Speaker - 0.35
     //down - 0.56
+  }
+
+  public double getHoldPosition(){
+    return holdPosition;
+  }
+
+  public double getEncoderPosition(){
+    return encoder.getAbsolutePosition();
   }
 
   /**
@@ -100,6 +111,7 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Arm Encoder", encoder.getAbsolutePosition());
+    SmartDashboard.putNumber("hold position", holdPosition);
   }
 
   @Override
