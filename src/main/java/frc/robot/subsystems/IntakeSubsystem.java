@@ -7,8 +7,11 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 
@@ -55,6 +58,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void index(double speed) {
     intakeMotor.set(speed);
   }
+
+  //public void rumbleController(Rev2mDistanceSensor sensor, XboxController controller){
+  //  controller.setRumble(RumbleType.kBothRumble, 1);
+  //}
 
   @Override
   public void periodic() {

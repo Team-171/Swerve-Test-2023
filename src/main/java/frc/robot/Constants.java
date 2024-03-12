@@ -74,7 +74,7 @@ public final class Constants {
     public static final double kDriveTurnI = 0;
     public static final double kDriveTurnD = 0;
 
-    public static final double kHeadingP = 0.04;
+    public static final double kHeadingP = 0.5;
     public static final double kHeadingI = 0;
     public static final double kHeadingD = 0;
   }
@@ -148,11 +148,11 @@ public final class Constants {
     public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
-    public static final double speakerLimelightHeight = 11.5;
-    public static final double speakerLimelightAngle = 38.5;
+    public static final double speakerLimelightHeight = 7.75;
+    public static final double speakerLimelightAngle = 24;
     public static final double xOffset = 0; // right is positive
-    public static final double yOffset = 18;
-    public static final String limelightAprilHostName = "limelight-april";
+    public static final double yOffset = 0;
+    public static final String limelightAprilHostName = "limelight-allison";
     public static final String limelightFloorHostName = "limelight-floor";
   }
 
@@ -205,25 +205,26 @@ public final class Constants {
   public static final class AprilTagHeights {
     public static final double source = 48.126;
     public static final double amp = 50.13;
-    public static final double speaker = 53.88;
+    public static final double speaker = 49.125;
     public static final double stage = 48.841;
   }
 
   public static final class ArmConstants {
     public static final double lowStop = 0.9;
-    public static final double highStop = 0.6;
+    public static final double highStop = 0.55;
     public static final double speed = 1;
-    public static final double speakerPos = 0.8;
+    public static final double speakerPos = 0.683;
+    public static final double ampPos = 0.575;
   }
 
   public static final class RollerConstants {
     public static final double intakeRollerSpeed = -0.4;
-    public static final double outputRollerSpeed = 0.8;
+    public static final double outputRollerSpeed = 1;
   }
 
   
   public static final class IndexConstants {
-    public static final double intakeIndexSpeed = -0.5;
+    public static final double intakeIndexSpeed = 0.5;
   }
 
   public static final class IntakeConstants {

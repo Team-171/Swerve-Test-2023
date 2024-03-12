@@ -128,6 +128,9 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
     m_field.setRobotPose(m_odometry.getPoseMeters());
+
+    SmartDashboard.putNumber("heading", getHeading());
+    SmartDashboard.putNumber("gyro radians", m_gyro.getRotation2d().getRadians());
   }
 
   /**
@@ -169,6 +172,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit, boolean slowMode) {
 
     SmartDashboard.putBoolean("slowMode", slowMode);
+    SmartDashboard.putNumber("rotationInput", rot);
 
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -176,7 +180,6 @@ public class DriveSubsystem extends SubsystemBase {
     if (rateLimit) {
       // Convert XY to polar for rate limiting
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
-      SmartDashboard.putNumber("transdir", inputTranslationDir);
       double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
 
       // Calculate the direction slew rate based on an estimate of the lateral
@@ -286,7 +289,7 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Returns the heading of the robot.
    *
-   * @return the robot's heading in degrees, from -180 to 180
+   * @return the robot's heading in degrees
    */
   public double getHeading() {
     return Rotation2d.fromDegrees(getDegrees()).getDegrees();
@@ -294,8 +297,22 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double getDesiredHeadingSpeed(double desiredHeading){
     double currentHeading = getHeading();
+    currentHeading = (Math.PI * currentHeading) / 180;
+
+    double errorHeading = desiredHeading - currentHeading;
+
+    while(errorHeading > Math.PI){
+      errorHeading -= (2 * Math.PI);
+    }
+    while (errorHeading < -Math.PI){
+      errorHeading += (2 * Math.PI);
+    }
+
     // use pid to find rotation velocity
-    double desiredAngularVelocity = headingPidController.calculate(currentHeading, desiredHeading);
+    double desiredAngularVelocity = headingPidController.calculate(0, errorHeading);
+
+
+
     // return the velocity given by pid
     return desiredAngularVelocity;
   }

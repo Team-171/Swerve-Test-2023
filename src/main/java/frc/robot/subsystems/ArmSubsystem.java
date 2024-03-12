@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -37,7 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor2 = new CANSparkMax(14, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(9);
 
-    pid = new PIDController(20, 0, 0.01);
+    pid = new PIDController(10, 0.5, 0.01);
 
     setPower = 0;
 
@@ -59,6 +60,8 @@ public class ArmSubsystem extends SubsystemBase {
    * @param speed double Input from triggers / axis
    */
   public void moveArm(double speedRight, double speedLeft){
+    SmartDashboard.putNumber("tyApril", LimelightHelpers.getTY(LimelightConstants.limelightAprilHostName));
+    SmartDashboard.putNumber("tyFloor", LimelightHelpers.getTY(LimelightConstants.limelightFloorHostName));
     if (!firstHoldPositionSet){
       holdPosition = encoder.getAbsolutePosition();
       firstHoldPositionSet = true;
@@ -74,7 +77,7 @@ public class ArmSubsystem extends SubsystemBase {
         holdPosition = encoder.getAbsolutePosition();
     }
     armMotor.set(setPower);
-    armMotor2.set(setPower); 
+    armMotor2.set(setPower);
   }
 
   public boolean setPointArm(double position){
@@ -87,9 +90,6 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor2.set(setPower);
 
     return false;
-
-    //Speaker - 0.35
-    //down - 0.56
   }
 
   public double getHoldPosition(){
@@ -109,8 +109,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Arm Encoder", encoder.getAbsolutePosition());
-    SmartDashboard.putNumber("hold position", holdPosition);
   }
 
   @Override

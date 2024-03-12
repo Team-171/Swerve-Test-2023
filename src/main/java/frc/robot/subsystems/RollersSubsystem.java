@@ -63,11 +63,7 @@ public class RollersSubsystem extends SubsystemBase {
   }
 
   public void index(double speed) {
-    if (rollersMotor.get() > 0) {
-      indexer.set(speed);
-    } else {
-      indexer.set(-speed);
-    }
+    indexer.set(speed);
   }
 
   @Override
