@@ -57,8 +57,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("hold position", m_robotContainer.m_ArmSubsystem.getHoldPosition());
-    SmartDashboard.putNumber("encoder", m_robotContainer.m_ArmSubsystem.getEncoderPosition());
+    
 
     double targetOffsetAngle_Vertical = LimelightHelpers.getTY("limelight-april");
     double limelightMountAngleDegrees = 13.0;

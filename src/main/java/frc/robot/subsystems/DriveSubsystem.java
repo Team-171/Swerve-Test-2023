@@ -295,6 +295,11 @@ public class DriveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(getDegrees()).getDegrees();
   }
 
+  /**
+   * 
+   * @param desiredHeading in radians
+   * @return
+   */
   public double getDesiredHeadingSpeed(double desiredHeading){
     double currentHeading = getHeading();
     currentHeading = (Math.PI * currentHeading) / 180;

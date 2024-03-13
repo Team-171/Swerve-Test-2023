@@ -38,7 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor2 = new CANSparkMax(14, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(9);
 
-    pid = new PIDController(10, 0.5, 0.01);
+    pid = new PIDController(10, 0, 0);
 
     setPower = 0;
 
@@ -100,6 +100,10 @@ public class ArmSubsystem extends SubsystemBase {
     return encoder.getAbsolutePosition();
   }
 
+  public void resetIntegral(){
+    pid.reset();
+  }
+
   /**
    * Resets the encoder in the motor
    */
@@ -109,6 +113,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("hold position", getHoldPosition());
+    SmartDashboard.putNumber("encoder", getEncoderPosition());
   }
 
   @Override

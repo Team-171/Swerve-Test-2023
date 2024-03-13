@@ -1,5 +1,6 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.RollersSubsystem;
@@ -9,15 +10,17 @@ public class Index extends Command {
     
     private RollersSubsystem subsystem;
     private double speed;
+    private DigitalInput noteLimitSwitch;
 
     /**
      * Follows a given trajectory for autonomous.
      * @param trajectory Trajectory to follow
      * @param subsystem Drive subsystem to drive the robot
      */
-    public Index(RollersSubsystem subsystem, double speed) {
+    public Index(RollersSubsystem subsystem, DigitalInput noteLimitSwitch) {
         this.subsystem = subsystem;
-        this.speed = speed;
+        this.speed = -1;
+        this.noteLimitSwitch = noteLimitSwitch;
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
@@ -38,11 +41,15 @@ public class Index extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        subsystem.index(0);
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        if (!noteLimitSwitch.get()) {
+            return true;
+        }
+        return false;
     }
 }

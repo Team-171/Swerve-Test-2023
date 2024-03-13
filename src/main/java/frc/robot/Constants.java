@@ -212,7 +212,7 @@ public final class Constants {
   public static final class ArmConstants {
     public static final double lowStop = 0.9;
     public static final double highStop = 0.55;
-    public static final double speed = 1;
+    public static final double speed = 0.5;
     public static final double speakerPos = 0.683;
     public static final double ampPos = 0.575;
   }
@@ -240,6 +240,10 @@ public final class Constants {
     public static final double larsonScanner = -0.33;
     public static final double fixedStrobeGold = -0.07;
 
+  }
+
+  public static final class LimitSwitchConstants {
+    public static final int channel = 8;
   }
 
 }

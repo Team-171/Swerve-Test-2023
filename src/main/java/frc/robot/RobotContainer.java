@@ -6,14 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.revrobotics.Rev2mDistanceSensor;
-import com.revrobotics.Rev2mDistanceSensor.Port;
-import com.revrobotics.Rev2mDistanceSensor.RangeProfile;
-import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +20,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.IndexConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LimitSwitchConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.Commands.AimAndRev;
@@ -50,13 +47,12 @@ public class RobotContainer {
         public final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
         private final LedSubsystem m_ChangeLedSubsystem = new LedSubsystem();
         private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
-        private double floorRange;
         // private final PIDController driveTurnPID = new
         // PIDController(DriveConstants.kDriveTurnP, DriveConstants.kDriveTurnI,
         // DriveConstants.kDriveTurnD);
         // static double theta = 0;
 
-        Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+        //Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
 
         private final SendableChooser<Command> autoChooser;
         public final SendableChooser<Double> ledChooser = new SendableChooser<Double>();
@@ -64,23 +60,25 @@ public class RobotContainer {
         // The driver's controller
         XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
+        DigitalInput secureNoteSwitch = new DigitalInput(LimitSwitchConstants.channel);
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
-                distanceSensor.setEnabled(true);
+                /* distanceSensor.setEnabled(true);
                 distanceSensor.setAutomaticMode(true);
                 distanceSensor.setRangeProfile(RangeProfile.kHighAccuracy);
                 distanceSensor.setDistanceUnits(Unit.kMillimeters);
-                floorRange = distanceSensor.getRange();
-                        SmartDashboard.putString("Floor Distance Sensor", floorRange + "mm");
+                floorRange = distanceSensor.getRange(); */
 
-                /*
-                 * NamedCommands.registerCommand("Intake",
-                 * new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem,
-                 * RollerConstants.intakeRollerSpeed, IndexConstants.intakeIndexSpeed,
-                 * IntakeConstants.intakeSpeed, ArmConstants.lowStop));
-                 */
+                
+                /* NamedCommands.registerCommand("Intake", new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController,
+                                                secureNoteSwitch, RollerConstants.intakeRollerSpeed, IndexConstants.intakeIndexSpeed,
+                                                IntakeConstants.intakeSpeed, ArmConstants.lowStop));
+                NamedCommands.registerCommand("AimAndRev", new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController, secureNoteSwitch));
+                NamedCommands.registerCommand("Shoot", new Index(m_RollersSubsystem, secureNoteSwitch));
+                NamedCommands.registerCommand("Amp", new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, secureNoteSwitch, true)); */
+                
 
                 // Configure the button bindings
                 configureButtonBindings();
@@ -179,32 +177,28 @@ public class RobotContainer {
 
                 // aim and rev
                 new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-                                .whileTrue(new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController));
+                                .whileTrue(new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController, secureNoteSwitch));
 
                 // intake a note from ground
                 new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem,
-                                                RollerConstants.intakeRollerSpeed, IndexConstants.intakeIndexSpeed,
-                                                IntakeConstants.intakeSpeed, ArmConstants.lowStop))
-                                .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem,
-                                                0, 0, 0, ArmConstants.lowStop));
+                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController,
+                                                secureNoteSwitch, RollerConstants.intakeRollerSpeed, IndexConstants.intakeIndexSpeed,
+                                                IntakeConstants.intakeSpeed, ArmConstants.lowStop));
 
                 // unknown
-                new JoystickButton(m_driverController, XboxController.Button.kY.value)
+                /* new JoystickButton(m_driverController, XboxController.Button.kY.value)
                                 .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem,
                                                 RollerConstants.outputRollerSpeed, 0, 0, ArmConstants.speakerPos))
                                 .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem,
-                                                0, 0, 0, ArmConstants.speakerPos));
+                                                0, 0, 0, ArmConstants.speakerPos)); */
 
                 // shoot
                 new JoystickButton(m_driverController, XboxController.Button.kA.value)
-                                .whileTrue(new Index(m_RollersSubsystem, -1))
-                                .whileFalse(new Index(m_RollersSubsystem, 0));
+                                .whileTrue(new Index(m_RollersSubsystem, secureNoteSwitch));
                 
                 // shoot for amp
                 new JoystickButton(m_driverController, XboxController.Button.kB.value)
-                                .whileTrue(new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, true))
-                                .whileFalse(new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, false));
+                                .whileTrue(new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, secureNoteSwitch, true));
         }
 
         /**

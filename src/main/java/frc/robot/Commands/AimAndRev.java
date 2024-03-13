@@ -1,6 +1,7 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,16 +28,19 @@ public class AimAndRev extends Command {
     private double targetY;
     private double shootPosition;
     private boolean targetFound = false;
+    private DigitalInput noteLimitSwitch;
 
     /**
      * Turns to aim at the speaker and shoot
      */
-    public AimAndRev(DriveSubsystem driveSubsystem, RollersSubsystem rollersSubsystem, ArmSubsystem armSubsystem, XboxController driveController) {
+    public AimAndRev(DriveSubsystem driveSubsystem, RollersSubsystem rollersSubsystem, ArmSubsystem armSubsystem, XboxController driveController, DigitalInput noteLimitSwitch) {
         this.driveSubsystem = driveSubsystem;
         this.rollersSubsystem = rollersSubsystem;
         this.armSubsystem = armSubsystem;
         this.shootPosition = ArmConstants.speakerPos;
         xboxController = driveController;
+        this.noteLimitSwitch = noteLimitSwitch;
+
         addRequirements(driveSubsystem, rollersSubsystem, armSubsystem);
     }
 
@@ -83,9 +87,15 @@ public class AimAndRev extends Command {
             SmartDashboard.putNumber("Target Angle", targetAngle);
             // potentially get driver x and y input
             double xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
-            double ySpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
+            double ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
+            double rotSpeed = driveSubsystem.getDesiredHeadingSpeed(targetAngle);
+            SmartDashboard.putNumber("Rotational Speed", rotSpeed);
 
-            driveSubsystem.drive(xSpeed, ySpeed, driveSubsystem.getDesiredHeadingSpeed(targetAngle), true, true, false);
+            if (xSpeed == 0 && ySpeed == 0 && rotSpeed == 0) {
+                driveSubsystem.setX();
+            }
+
+            driveSubsystem.drive(xSpeed, ySpeed, rotSpeed, true, true, false);
             
             // find the shooter position
             double td = targetDistance / 12;
@@ -110,6 +120,9 @@ public class AimAndRev extends Command {
     @Override
     public boolean isFinished() {
         // only ends when button is released
+        if (!noteLimitSwitch.get()) {
+            return true;
+        }
         return false;
     }
 }
