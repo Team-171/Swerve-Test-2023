@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
 import frc.robot.Constants.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -38,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor2 = new CANSparkMax(14, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(9);
 
-    pid = new PIDController(10, 0, 0);
+    pid = new PIDController(8, 0.65, 0);
 
     setPower = 0;
 
@@ -60,14 +59,17 @@ public class ArmSubsystem extends SubsystemBase {
    * @param speed double Input from triggers / axis
    */
   public void moveArm(double speedRight, double speedLeft){
-    SmartDashboard.putNumber("tyApril", LimelightHelpers.getTY(LimelightConstants.limelightAprilHostName));
-    SmartDashboard.putNumber("tyFloor", LimelightHelpers.getTY(LimelightConstants.limelightFloorHostName));
+    double encoderValue = encoder.getAbsolutePosition();
+    if(encoderValue == 0){
+      manualMoveSpeed(speedRight, speedLeft);
+      return;
+    }
     if (!firstHoldPositionSet){
       holdPosition = encoder.getAbsolutePosition();
       firstHoldPositionSet = true;
     }
     double speed = speedRight - speedLeft;
-    speed = speed * .05;
+    speed = speed * .09;
 
     setPoint = MathUtil.clamp(speed + holdPosition, ArmConstants.highStop, ArmConstants.lowStop);
 
@@ -78,6 +80,17 @@ public class ArmSubsystem extends SubsystemBase {
     }
     armMotor.set(setPower);
     armMotor2.set(setPower);
+  }
+
+  /**
+   * Moves the roller based on an axis, in this case, triggers
+   * @param speed double Input from triggers / axis
+   */
+  public void manualMoveSpeed(double speedRight, double speedLeft){
+    double adjustedSpeed = speedRight - speedLeft;
+    adjustedSpeed = adjustedSpeed * ArmConstants.speed;
+    armMotor.set(adjustedSpeed);
+    armMotor2.set(adjustedSpeed);
   }
 
   public boolean setPointArm(double position){
@@ -97,7 +110,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getEncoderPosition(){
-    return encoder.getAbsolutePosition();
+    return MathUtil.clamp(encoder.getAbsolutePosition(), ArmConstants.highStop, ArmConstants.lowStop);
   }
 
   public void resetIntegral(){
@@ -114,7 +127,9 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("hold position", getHoldPosition());
-    SmartDashboard.putNumber("encoder", getEncoderPosition());
+    SmartDashboard.putNumber("encoder", encoder.getAbsolutePosition());
+
+    SmartDashboard.putNumber("armMotor",armMotor.get());
   }
 
   @Override

@@ -16,23 +16,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ButtonConstants;
-import frc.robot.Constants.IndexConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LimitSwitchConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.RollerConstants;
 import frc.robot.Commands.AimAndRev;
 import frc.robot.Commands.Amp;
 import frc.robot.Commands.Index;
 import frc.robot.Commands.IntakeAndRollers;
+import frc.robot.Commands.ReverseIntake;
+import frc.robot.Commands.Rumble;
 import frc.robot.Commands.ZeroHeading;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.RollersSubsystem;
+//limit switch digital port 6
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -47,6 +47,7 @@ public class RobotContainer {
         public final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
         private final LedSubsystem m_ChangeLedSubsystem = new LedSubsystem();
         private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+        private final IndexSubsystem m_IndexSubsystem = new IndexSubsystem();
         // private final PIDController driveTurnPID = new
         // PIDController(DriveConstants.kDriveTurnP, DriveConstants.kDriveTurnI,
         // DriveConstants.kDriveTurnD);
@@ -65,25 +66,18 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
-                /* distanceSensor.setEnabled(true);
-                distanceSensor.setAutomaticMode(true);
-                distanceSensor.setRangeProfile(RangeProfile.kHighAccuracy);
-                distanceSensor.setDistanceUnits(Unit.kMillimeters);
-                floorRange = distanceSensor.getRange(); */
 
-                
-                /* NamedCommands.registerCommand("Intake", new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController,
-                                                secureNoteSwitch, RollerConstants.intakeRollerSpeed, IndexConstants.intakeIndexSpeed,
-                                                IntakeConstants.intakeSpeed, ArmConstants.lowStop));
+                NamedCommands.registerCommand("Intake", new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem,  m_ArmSubsystem, m_robotDrive, m_driverController, secureNoteSwitch, true));
                 NamedCommands.registerCommand("AimAndRev", new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController, secureNoteSwitch));
-                NamedCommands.registerCommand("Shoot", new Index(m_RollersSubsystem, secureNoteSwitch));
-                NamedCommands.registerCommand("Amp", new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, secureNoteSwitch, true)); */
+                NamedCommands.registerCommand("Shoot", new Index(m_IndexSubsystem, secureNoteSwitch));
+                NamedCommands.registerCommand("Amp", new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem,  m_ArmSubsystem, secureNoteSwitch, true));
                 
 
                 // Configure the button bindings
                 configureButtonBindings();
 
-                autoChooser = AutoBuilder.buildAutoChooser("Straight");
+                autoChooser = AutoBuilder.buildAutoChooser("453");
+                
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
                 ledChooser.setDefaultOption("Rainbow", Constants.LEDConstants.rainbowWithGlitter);
@@ -95,7 +89,6 @@ public class RobotContainer {
                 ledChooser.addOption("Strobe", Constants.LEDConstants.fixedStrobeGold);
                 SmartDashboard.putData(ledChooser);
 
-                // theta = m_robotDrive.getDegrees();
 
                 // m_robotDrive.resetEncoders();
 
@@ -113,30 +106,6 @@ public class RobotContainer {
                                                                                 OIConstants.kDriveDeadband),
                                                                 true, true, m_driverController.getStartButton()),
                                                 m_robotDrive));
-
-                /*
-                 * m_robotDrive.setDefaultCommand(
-                 * new RunCommand(() ->
-                 * {
-                 * double leftY = -MathUtil.applyDeadband(m_driverController.getLeftY(),
-                 * OIConstants.kDriveDeadband);
-                 * double leftX = -MathUtil.applyDeadband(m_driverController.getLeftX(),
-                 * OIConstants.kDriveDeadband);
-                 * double rightX = -MathUtil.applyDeadband(m_driverController.getRightX(),
-                 * OIConstants.kDriveDeadband);
-                 * double turnInput = 0;
-                 * // if recieving joystick input drive normally
-                 * if (rightX != 0) {
-                 * theta = m_robotDrive.getDegrees();
-                 * turnInput = rightX;
-                 * }
-                 * // else maintain heading
-                 * else {
-                 * turnInput = driveTurnPID.calculate(m_robotDrive.getDegrees(), theta);
-                 * }
-                 * m_robotDrive.drive(leftY, leftX, turnInput, true, true, slowmode);
-                 * }, m_robotDrive));
-                 */
 
                 m_ArmSubsystem.setDefaultCommand(
                                 new RunCommand(() -> m_ArmSubsystem.moveArm(
@@ -181,24 +150,20 @@ public class RobotContainer {
 
                 // intake a note from ground
                 new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController,
-                                                secureNoteSwitch, RollerConstants.intakeRollerSpeed, IndexConstants.intakeIndexSpeed,
-                                                IntakeConstants.intakeSpeed, ArmConstants.lowStop));
-
-                // unknown
-                /* new JoystickButton(m_driverController, XboxController.Button.kY.value)
-                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem,
-                                                RollerConstants.outputRollerSpeed, 0, 0, ArmConstants.speakerPos))
-                                .whileFalse(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem,
-                                                0, 0, 0, ArmConstants.speakerPos)); */
+                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController, secureNoteSwitch, false));
+                                //.whileTrue(new Rumble(m_driverController, secureNoteSwitch));
 
                 // shoot
                 new JoystickButton(m_driverController, XboxController.Button.kA.value)
-                                .whileTrue(new Index(m_RollersSubsystem, secureNoteSwitch));
+                                .whileTrue(new Index(m_IndexSubsystem, secureNoteSwitch));
                 
                 // shoot for amp
                 new JoystickButton(m_driverController, XboxController.Button.kB.value)
-                                .whileTrue(new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_ArmSubsystem, secureNoteSwitch, true));
+                                .whileTrue(new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem, m_ArmSubsystem, secureNoteSwitch, true));
+
+                // reverses intake, rollers, and indexer to clear jams
+                new JoystickButton(m_driverController, XboxController.Button.kY.value)
+                                .whileTrue(new ReverseIntake(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem));
         }
 
         /**

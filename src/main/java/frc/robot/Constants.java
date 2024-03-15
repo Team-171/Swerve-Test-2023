@@ -77,6 +77,8 @@ public final class Constants {
     public static final double kHeadingP = 0.5;
     public static final double kHeadingI = 0;
     public static final double kHeadingD = 0;
+
+    public static final double rotSpeedCoefficient = 0.8;
   }
 
   public static final class ModuleConstants {
@@ -91,7 +93,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kWheelDiameterMeters = 0.075565;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
     public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
@@ -149,7 +151,7 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double speakerLimelightHeight = 7.75;
-    public static final double speakerLimelightAngle = 24;
+    public static final double speakerLimelightAngle = 23;
     public static final double xOffset = 0; // right is positive
     public static final double yOffset = 0;
     public static final String limelightAprilHostName = "limelight-allison";
@@ -177,6 +179,8 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+    public static final double intakeDriveSpeed = 0.5;
   }
 
   public static final class NeoMotorConstants {
@@ -205,21 +209,21 @@ public final class Constants {
   public static final class AprilTagHeights {
     public static final double source = 48.126;
     public static final double amp = 50.13;
-    public static final double speaker = 49.125;
+    public static final double speaker = 53.875;
     public static final double stage = 48.841;
   }
 
   public static final class ArmConstants {
-    public static final double lowStop = 0.9;
+    public static final double lowStop = 0.8975;
     public static final double highStop = 0.55;
-    public static final double speed = 0.5;
+    public static final double speed = 0.65;
     public static final double speakerPos = 0.683;
     public static final double ampPos = 0.575;
   }
 
   public static final class RollerConstants {
     public static final double intakeRollerSpeed = -0.4;
-    public static final double outputRollerSpeed = 1;
+    public static final double outputRollerSpeed = 0.75;
   }
 
   

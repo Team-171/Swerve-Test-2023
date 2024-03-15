@@ -29,6 +29,7 @@ public class AimAndRev extends Command {
     private double shootPosition;
     private boolean targetFound = false;
     private DigitalInput noteLimitSwitch;
+    private double revSpeed;
 
     /**
      * Turns to aim at the speaker and shoot
@@ -40,6 +41,7 @@ public class AimAndRev extends Command {
         this.shootPosition = ArmConstants.speakerPos;
         xboxController = driveController;
         this.noteLimitSwitch = noteLimitSwitch;
+        this.revSpeed = 0.5;
 
         addRequirements(driveSubsystem, rollersSubsystem, armSubsystem);
     }
@@ -47,7 +49,7 @@ public class AimAndRev extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        rollersSubsystem.moveRoller(RollerConstants.outputRollerSpeed);
+        //rollersSubsystem.moveRoller(RollerConstants.outputRollerSpeed);
         targetFound = false;
     }
 
@@ -59,17 +61,19 @@ public class AimAndRev extends Command {
 
         boolean hasTarget = LimelightHelpers.getTV(LimelightConstants.limelightAprilHostName);
         SmartDashboard.putBoolean("TV test", LimelightHelpers.getTV(LimelightConstants.limelightAprilHostName));
+        double id = LimelightHelpers.getFiducialID(LimelightConstants.limelightAprilHostName);
         double driveX = driveSubsystem.getPose().getX();
         double driveY = driveSubsystem.getPose().getY();
         double driveHeading = driveSubsystem.getHeading();
         // if an april tag was seen
-        if (hasTarget){
+        if (hasTarget && (id == 4 || id == 7)){
             tx = -LimelightHelpers.getTX(LimelightConstants.limelightAprilHostName);
             double ty = LimelightHelpers.getTY(LimelightConstants.limelightAprilHostName);
             targetHeading = (tx + driveHeading) * Math.PI / 180;
 
             // d = (h2-h1) / tan(a1+a2)
             targetDistance = (AprilTagHeights.speaker - LimelightConstants.speakerLimelightHeight) / Math.tan((LimelightConstants.speakerLimelightAngle + ty) * Math.PI / 180);
+            SmartDashboard.putNumber("wall distance", targetDistance);
 
             // adjust for limelight offset from the center of the robot
             double limelightX = driveX + LimelightConstants.xOffset * Math.sin(driveHeading) + LimelightConstants.yOffset * Math.cos(driveHeading);
@@ -77,19 +81,15 @@ public class AimAndRev extends Command {
             
             targetX = limelightX + (targetDistance * Math.cos(targetHeading));
             targetY = limelightY + (targetDistance * Math.sin(targetHeading));
-            SmartDashboard.putNumber("targetX", targetX);
-            SmartDashboard.putNumber("targetY", targetY);
             targetFound = true;
         }
 
         if (targetFound) {
             double targetAngle = Math.atan2(targetY - driveY, targetX - driveX);
-            SmartDashboard.putNumber("Target Angle", targetAngle);
             // potentially get driver x and y input
             double xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
             double ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
             double rotSpeed = driveSubsystem.getDesiredHeadingSpeed(targetAngle);
-            SmartDashboard.putNumber("Rotational Speed", rotSpeed);
 
             if (xSpeed == 0 && ySpeed == 0 && rotSpeed == 0) {
                 driveSubsystem.setX();
@@ -102,10 +102,13 @@ public class AimAndRev extends Command {
 
             SmartDashboard.putNumber("td IntakeAndRollers", td);
 
-            shootPosition = (0.000019 * Math.pow(td, 3))
-                    - (0.001047 * Math.pow(td, 2)) + (0.020010 * td) + 0.629581;
+            shootPosition = (-0.000002 * Math.pow(td, 3))
+                    - (0.000161 * Math.pow(td, 2)) + (0.008731 * td) + 0.673652;
+            // shootPosition = 0.703;
+            revSpeed = MathUtil.clamp((targetDistance / 180), 0.75, 1);
         }
-        SmartDashboard.putNumber("arm encoder", armSubsystem.getEncoderPosition());
+        rollersSubsystem.moveRoller(revSpeed);
+        // shootPosition = armSubsystem.getEncoderPosition();
         armSubsystem.setPointArm(shootPosition);
     }
 
@@ -120,9 +123,9 @@ public class AimAndRev extends Command {
     @Override
     public boolean isFinished() {
         // only ends when button is released
-        if (!noteLimitSwitch.get()) {
+        /* if (!noteLimitSwitch.get()) {
             return true;
-        }
+        } */
         return false;
     }
 }
