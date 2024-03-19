@@ -35,7 +35,7 @@ public class Amp extends Command {
         this.indexSubsystem = indexSubsystem;
         this.armSubsystem = armSubsystem;
         this.rollerSpeed = -0.4;
-        this.indexSpeed = 0.6;
+        this.indexSpeed = 1;
         this.armPosition = ArmConstants.ampPos;
         this.noteLimitSwitch = noteLimitSwitch;
 
@@ -57,6 +57,7 @@ public class Amp extends Command {
             rollersSubsystem.moveRoller(rollerSpeed);
             indexSubsystem.moveIndex(indexSpeed);
         }
+        armSubsystem.setPointArm(armPosition);
     }
 
     // Called once the command ends or is interrupted.

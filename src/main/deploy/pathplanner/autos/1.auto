@@ -2,15 +2,21 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.79769185179396,
-      "y": 4.3385312981452175
+      "x": 1.359011265031077,
+      "y": 7.3556231442947215
     },
-    "rotation": -60.255118703057796
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top to Leave"
+          }
+        },
         {
           "type": "race",
           "data": {
@@ -24,7 +30,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.5
+                  "waitTime": 0.75
                 }
               }
             ]
@@ -49,10 +55,41 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 0.5
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Leave to 1"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.5
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 to Leave"
           }
         }
       ]

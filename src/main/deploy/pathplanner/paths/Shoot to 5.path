@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.366128157434463,
-        "y": 2.4081902795634575
+        "x": 3.7446187712888244,
+        "y": 2.6896555217611855
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.341103979120074,
-        "y": 2.0181999508892146
+        "x": 4.1539141767742205,
+        "y": 1.6956523941537913
       },
       "isLocked": false,
       "linkedName": "Shoot Long Bottom"
     },
     {
       "anchor": {
-        "x": 7.480526124947738,
-        "y": 0.779980657348488
+        "x": 7.100841096269087,
+        "y": 0.7601200387585969
       },
       "prevControl": {
-        "x": 6.339804413575574,
-        "y": 1.0042250963361778
+        "x": 5.960119384896923,
+        "y": 0.9843644777462868
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,9 +32,9 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 620.0
   },
   "goalEndState": {
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -35.21759296819275,
     "velocity": 0
   },
   "useDefaultConstraints": true

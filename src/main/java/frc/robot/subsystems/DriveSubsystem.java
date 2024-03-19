@@ -312,7 +312,7 @@ public class DriveSubsystem extends SubsystemBase {
     // use pid to find rotation velocity
     double desiredAngularVelocity = headingPidController.calculate(0, errorHeading);
 
-
+    headingPidController.reset();
 
     // return the velocity given by pid
     return desiredAngularVelocity;

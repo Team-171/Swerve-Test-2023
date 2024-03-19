@@ -68,6 +68,7 @@ public class AimAndRev extends Command {
         // if an april tag was seen
         if (hasTarget && (id == 4 || id == 7)){
             tx = -LimelightHelpers.getTX(LimelightConstants.limelightAprilHostName);
+            SmartDashboard.putNumber("txAimAndRev", tx);
             double ty = LimelightHelpers.getTY(LimelightConstants.limelightAprilHostName);
             targetHeading = (tx + driveHeading) * Math.PI / 180;
 
@@ -101,9 +102,11 @@ public class AimAndRev extends Command {
             double td = targetDistance / 12;
 
             SmartDashboard.putNumber("td IntakeAndRollers", td);
+            SmartDashboard.putNumber("targetX", targetX);
+            SmartDashboard.putNumber("targetY", targetY);
 
             shootPosition = (-0.000002 * Math.pow(td, 3))
-                    - (0.000161 * Math.pow(td, 2)) + (0.008731 * td) + 0.673652;
+                    - (0.000180 * Math.pow(td, 2)) + (0.008983 * td) + 0.672893;
             // shootPosition = 0.703;
             revSpeed = MathUtil.clamp((targetDistance / 180), 0.75, 1);
         }
@@ -123,9 +126,6 @@ public class AimAndRev extends Command {
     @Override
     public boolean isFinished() {
         // only ends when button is released
-        /* if (!noteLimitSwitch.get()) {
-            return true;
-        } */
         return false;
     }
 }

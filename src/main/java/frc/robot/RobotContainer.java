@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.nio.file.Path;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -16,15 +18,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ButtonConstants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LimitSwitchConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.AimAndRev;
 import frc.robot.Commands.Amp;
 import frc.robot.Commands.Index;
 import frc.robot.Commands.IntakeAndRollers;
+import frc.robot.Commands.LEDIntake;
 import frc.robot.Commands.ReverseIntake;
-import frc.robot.Commands.Rumble;
+import frc.robot.Commands.SetArm;
 import frc.robot.Commands.ZeroHeading;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -71,7 +76,13 @@ public class RobotContainer {
                 NamedCommands.registerCommand("AimAndRev", new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController, secureNoteSwitch));
                 NamedCommands.registerCommand("Shoot", new Index(m_IndexSubsystem, secureNoteSwitch));
                 NamedCommands.registerCommand("Amp", new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem,  m_ArmSubsystem, secureNoteSwitch, true));
-                
+                NamedCommands.registerCommand("Pathfind to 4", Pathfind.pathFind("Shoot to 4"));
+                NamedCommands.registerCommand("Pathfind from 4", Pathfind.pathFind("4 to Shoot"));
+                NamedCommands.registerCommand("Pathfind to 5", Pathfind.pathFind("Shoot to 5"));
+                NamedCommands.registerCommand("Pathfind from 5", Pathfind.pathFind("5 to Shoot"));
+                NamedCommands.registerCommand("Pathfind to 3", Pathfind.pathFind("Shoot to 3"));
+                NamedCommands.registerCommand("Pathfind from 3", Pathfind.pathFind("3 to Shoot"));
+                NamedCommands.registerCommand("Bottom Corner to Shoot", Pathfind.pathFind("Bottom Corner to Shoot"));
 
                 // Configure the button bindings
                 configureButtonBindings();
@@ -115,13 +126,15 @@ public class RobotContainer {
                                                                 OIConstants.kDriveDeadband)),
                                                 m_ArmSubsystem));
 
+                /* m_ChangeLedSubsystem.setDefaultCommand(
+                                new RunCommand(() -> m_ChangeLedSubsystem.changeColor(LEDConstants.rainbowWithGlitter),
+                                                m_ChangeLedSubsystem)); */
+                
                 m_ChangeLedSubsystem.setDefaultCommand(
-                                new RunCommand(() -> m_ChangeLedSubsystem.changeColor(ledChooser.getSelected()),
+                                new RunCommand(() -> m_ChangeLedSubsystem.teamChangeColor(),
                                                 m_ChangeLedSubsystem));
 
-        //      m_IntakeSubsystem.setDefaultCommand(
-        //                      new RunCommand(() -> m_IntakeSubsystem.rumbleController(distanceSensor,
-        //                                      m_driverController), m_IntakeSubsystem));
+        
         }
 
         /**
@@ -146,12 +159,13 @@ public class RobotContainer {
 
                 // aim and rev
                 new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-                                .whileTrue(new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController, secureNoteSwitch));
+                                .whileTrue(new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController, secureNoteSwitch))
+                                .onFalse(new SetArm(m_ArmSubsystem, ArmConstants.lowStop));
 
                 // intake a note from ground
                 new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController, secureNoteSwitch, false));
-                                //.whileTrue(new Rumble(m_driverController, secureNoteSwitch));
+                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController, secureNoteSwitch, false))
+                                .whileTrue(new LEDIntake(m_ChangeLedSubsystem, secureNoteSwitch));
 
                 // shoot
                 new JoystickButton(m_driverController, XboxController.Button.kA.value)
@@ -163,7 +177,7 @@ public class RobotContainer {
 
                 // reverses intake, rollers, and indexer to clear jams
                 new JoystickButton(m_driverController, XboxController.Button.kY.value)
-                                .whileTrue(new ReverseIntake(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem));
+                                .whileTrue(new ReverseIntake(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem, secureNoteSwitch));
         }
 
         /**

@@ -3,7 +3,6 @@ package frc.robot.Commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
@@ -46,8 +45,10 @@ public class IntakeAndRollers extends Command {
      * @param trajectory Trajectory to follow
      * @param subsystem  Drive subsystem to drive the robot
      */
-    public IntakeAndRollers(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem, IndexSubsystem indexSubsystem,
-            ArmSubsystem armSubsystem, DriveSubsystem driveSubsystem, XboxController xboxController, DigitalInput noteLimitSwitch, boolean isAuto) {
+    public IntakeAndRollers(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem,
+            IndexSubsystem indexSubsystem,
+            ArmSubsystem armSubsystem, DriveSubsystem driveSubsystem, XboxController xboxController,
+            DigitalInput noteLimitSwitch, boolean isAuto) {
         this.rollersSubsystem = rollersSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.armSubsystem = armSubsystem;
@@ -69,6 +70,8 @@ public class IntakeAndRollers extends Command {
     @Override
     public void initialize() {
         armSubsystem.setPointArm(armPosition);
+        hasTarget = false;
+        targetFound = false;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -80,10 +83,10 @@ public class IntakeAndRollers extends Command {
             rollersSubsystem.moveRoller(rollerSpeed);
             armSubsystem.resetIntegral();
         }
-        
+
         hasTarget = LimelightHelpers.getTV(LimelightConstants.limelightFloorHostName);
 
-        if (hasTarget){
+        if (hasTarget) {
             tx = LimelightHelpers.getTX(LimelightConstants.limelightFloorHostName);
             desiredHeading = driveSubsystem.getHeading() + tx;
             desiredHeading = desiredHeading / 180 * Math.PI;
@@ -93,14 +96,22 @@ public class IntakeAndRollers extends Command {
         if (targetFound) {
             // potentially get driver x and y input
             double xSpeed;
+            double ySpeed;
             if (isAuto) {
                 xSpeed = AutoConstants.intakeDriveSpeed;
-            }
-            else {
+                ySpeed = 0;
+            } else {
                 xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
+                ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
             }
             double rotSpeed = -driveSubsystem.getDesiredHeadingSpeed(desiredHeading);
-            driveSubsystem.drive(xSpeed, 0, rotSpeed, false, true, true);
+            driveSubsystem.drive(xSpeed, ySpeed, rotSpeed, true, true, true);
+        } else {
+            double xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
+            double ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
+            double rotSpeed = -MathUtil.applyDeadband(xboxController.getRightX(),
+                    OIConstants.kDriveDeadband);
+            driveSubsystem.drive(xSpeed, ySpeed, rotSpeed, true, true, true);
         }
 
         armSubsystem.setPointArm(armPosition);
@@ -121,7 +132,7 @@ public class IntakeAndRollers extends Command {
     public boolean isFinished() {
         // command only ends when interrupted
         SmartDashboard.putBoolean("switch", noteLimitSwitch.get());
-        if (noteLimitSwitch.get()){
+        if (noteLimitSwitch.get()) {
             return true;
         }
         return false;

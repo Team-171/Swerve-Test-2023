@@ -30,7 +30,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 1.25
                 }
               }
             ]
@@ -62,9 +62,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Shoot to 4"
+            "name": "Pathfind to 4"
           }
         },
         {
@@ -87,9 +87,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "4 to Shoot"
+            "name": "Pathfind from 4"
           }
         },
         {
@@ -105,7 +105,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 1.25
                 }
               }
             ]
@@ -137,9 +137,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Shoot to 5"
+            "name": "Pathfind to 5"
           }
         },
         {
@@ -162,9 +162,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "5 to Shoot"
+            "name": "Pathfind from 5"
           }
         },
         {
@@ -180,7 +180,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 1.25
                 }
               }
             ]
@@ -255,7 +255,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 1.25
                 }
               }
             ]

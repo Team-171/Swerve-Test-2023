@@ -29,7 +29,7 @@ public class ReverseIntake extends Command {
     private double intakeSpeed;
     private double rollerSpeed;
     private double indexSpeed;
-
+    private DigitalInput noteSwitch;
 
     /**
      * Follows a given trajectory for autonomous.
@@ -37,13 +37,15 @@ public class ReverseIntake extends Command {
      * @param trajectory Trajectory to follow
      * @param subsystem  Drive subsystem to drive the robot
      */
-    public ReverseIntake(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem, IndexSubsystem indexSubsystem) {
+    public ReverseIntake(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem,
+            IndexSubsystem indexSubsystem, DigitalInput noteSwitch) {
         this.rollersSubsystem = rollersSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.indexSubsystem = indexSubsystem;
         this.rollerSpeed = RollerConstants.intakeRollerSpeed;
         this.indexSpeed = IndexConstants.intakeIndexSpeed;
         this.intakeSpeed = IntakeConstants.intakeSpeed;
+        this.noteSwitch = noteSwitch;
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(rollersSubsystem, intakeSubsystem, indexSubsystem);
@@ -57,9 +59,13 @@ public class ReverseIntake extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        intakeSubsystem.runIntake(-intakeSpeed);
-        indexSubsystem.moveIndex(-indexSpeed);
-        rollersSubsystem.moveRoller(-rollerSpeed);
+        if (noteSwitch.get()) {
+            intakeSubsystem.runIntake(-intakeSpeed);
+        }else{
+            intakeSubsystem.runIntake(-intakeSpeed);
+            indexSubsystem.moveIndex(-indexSpeed);
+            rollersSubsystem.moveRoller(-rollerSpeed);
+        }
     }
 
     // Called once the command ends or is interrupted.
