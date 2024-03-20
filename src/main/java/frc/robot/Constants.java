@@ -245,8 +245,11 @@ public final class Constants {
     public static final double fixedStrobeGold = -0.07;
     public static final double green = 0.77;
     public static final double red = 0.61;
+    public static final double violet = 0.91;
     public static final double redBreathe = -0.17;
     public static final double blueBreathe = -0.15;
+    public static final double redHeartbeat = -0.25;
+    public static final double blueHeartbeat = -0.23;
     public static final int channel = 9;
   }
 

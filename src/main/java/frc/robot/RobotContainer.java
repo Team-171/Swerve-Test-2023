@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.nio.file.Path;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -20,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ButtonConstants;
-import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LimitSwitchConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.AimAndRev;
@@ -73,7 +70,7 @@ public class RobotContainer {
         public RobotContainer() {
 
                 NamedCommands.registerCommand("Intake", new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem,  m_ArmSubsystem, m_robotDrive, m_driverController, secureNoteSwitch, true));
-                NamedCommands.registerCommand("AimAndRev", new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController, secureNoteSwitch));
+                NamedCommands.registerCommand("AimAndRev", new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_ChangeLedSubsystem, m_driverController, secureNoteSwitch));
                 NamedCommands.registerCommand("Shoot", new Index(m_IndexSubsystem, secureNoteSwitch));
                 NamedCommands.registerCommand("Amp", new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem,  m_ArmSubsystem, secureNoteSwitch, true));
                 NamedCommands.registerCommand("Pathfind to 4", Pathfind.pathFind("Shoot to 4"));
@@ -159,17 +156,17 @@ public class RobotContainer {
 
                 // aim and rev
                 new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-                                .whileTrue(new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_driverController, secureNoteSwitch))
-                                .onFalse(new SetArm(m_ArmSubsystem, ArmConstants.lowStop));
+                                .toggleOnTrue(new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_ChangeLedSubsystem, m_driverController, secureNoteSwitch));
 
                 // intake a note from ground
                 new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-                                .whileTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController, secureNoteSwitch, false))
-                                .whileTrue(new LEDIntake(m_ChangeLedSubsystem, secureNoteSwitch));
+                                .toggleOnTrue(new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem, m_ArmSubsystem, m_robotDrive, m_driverController, secureNoteSwitch, false))
+                                .toggleOnTrue(new LEDIntake(m_ChangeLedSubsystem, secureNoteSwitch));
 
                 // shoot
-                new JoystickButton(m_driverController, XboxController.Button.kA.value)
-                                .whileTrue(new Index(m_IndexSubsystem, secureNoteSwitch));
+                new JoystickButton(m_driverController, XboxController.Button.kRightStick.value)
+                                .whileTrue(new Index(m_IndexSubsystem, secureNoteSwitch))
+                                .onFalse(new SetArm(m_ArmSubsystem, ArmConstants.lowStop));
                 
                 // shoot for amp
                 new JoystickButton(m_driverController, XboxController.Button.kB.value)

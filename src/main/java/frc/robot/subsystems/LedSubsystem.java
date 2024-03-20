@@ -22,10 +22,10 @@ public class LedSubsystem extends SubsystemBase{
                 Optional<Alliance> ally = DriverStation.getAlliance();
                 if(ally.isPresent()){
                         if(ally.get() == Alliance.Red){
-                                changeColor(LEDConstants.redBreathe);
+                                changeColor(LEDConstants.redHeartbeat);
                         }
                         if(ally.get() == Alliance.Blue){
-                                changeColor(LEDConstants.blueBreathe);
+                                changeColor(LEDConstants.blueHeartbeat);
                         }
                 }
         }

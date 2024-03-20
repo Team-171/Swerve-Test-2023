@@ -1,6 +1,8 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -8,11 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.AprilTagHeights;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.RollersSubsystem;
 
 public class AimAndRev extends Command {
@@ -20,6 +23,7 @@ public class AimAndRev extends Command {
     private DriveSubsystem driveSubsystem;
     private RollersSubsystem rollersSubsystem;
     private ArmSubsystem armSubsystem;
+    private LedSubsystem ledSubsystem;
     private XboxController xboxController;
     private double tx;
     private double targetHeading;
@@ -34,10 +38,11 @@ public class AimAndRev extends Command {
     /**
      * Turns to aim at the speaker and shoot
      */
-    public AimAndRev(DriveSubsystem driveSubsystem, RollersSubsystem rollersSubsystem, ArmSubsystem armSubsystem, XboxController driveController, DigitalInput noteLimitSwitch) {
+    public AimAndRev(DriveSubsystem driveSubsystem, RollersSubsystem rollersSubsystem, ArmSubsystem armSubsystem, LedSubsystem ledSubsystem, XboxController driveController, DigitalInput noteLimitSwitch) {
         this.driveSubsystem = driveSubsystem;
         this.rollersSubsystem = rollersSubsystem;
         this.armSubsystem = armSubsystem;
+        this.ledSubsystem = ledSubsystem;
         this.shootPosition = ArmConstants.speakerPos;
         xboxController = driveController;
         this.noteLimitSwitch = noteLimitSwitch;
@@ -109,10 +114,23 @@ public class AimAndRev extends Command {
                     - (0.000180 * Math.pow(td, 2)) + (0.008983 * td) + 0.672893;
             // shootPosition = 0.703;
             revSpeed = MathUtil.clamp((targetDistance / 180), 0.75, 1);
+        }else{
+            shootPosition = 0.69;
+            double xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
+            double ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
+            double rotSpeed = -MathUtil.applyDeadband(xboxController.getRightX(),
+                    OIConstants.kDriveDeadband);
+            driveSubsystem.drive(xSpeed, ySpeed, rotSpeed, true, true, true);
         }
         rollersSubsystem.moveRoller(revSpeed);
-        // shootPosition = armSubsystem.getEncoderPosition();
         armSubsystem.setPointArm(shootPosition);
+        if (armSubsystem.getEncoderPosition() > shootPosition - 0.005 && armSubsystem.getEncoderPosition() < shootPosition + 0.005){
+            ledSubsystem.changeColor(LEDConstants.green);
+        }
+        else{
+            ledSubsystem.changeColor(LEDConstants.violet);
+        }
+        armSubsystem.resetIntegral();
     }
 
     // Called once the command ends or is interrupted.

@@ -1,11 +1,8 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 
 public class LEDIntake extends Command {
@@ -37,7 +34,7 @@ public class LEDIntake extends Command {
             ledSubsystem.changeColor(LEDConstants.green);
         }
         else {
-            ledSubsystem.changeColor(LEDConstants.red);
+            ledSubsystem.changeColor(LEDConstants.violet);
         }
     }
 

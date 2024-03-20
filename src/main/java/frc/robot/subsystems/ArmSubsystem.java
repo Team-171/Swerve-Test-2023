@@ -37,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor2 = new CANSparkMax(14, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(9);
 
-    pid = new PIDController(9, 0.65, 0);
+    pid = new PIDController(10, 0.65, 0);
 
     setPower = 0;
 
@@ -48,8 +48,8 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor.setSmartCurrentLimit(60);
     armMotor2.setSmartCurrentLimit(60);
 
-    armMotor.setClosedLoopRampRate(0.25);
-    armMotor2.setClosedLoopRampRate(0.25);
+    armMotor.setClosedLoopRampRate(0.5);
+    armMotor2.setClosedLoopRampRate(0.5);
 
     armMotor2.setInverted(true);
   }
