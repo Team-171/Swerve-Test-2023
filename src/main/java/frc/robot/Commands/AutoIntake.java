@@ -3,7 +3,6 @@ package frc.robot.Commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
@@ -19,7 +18,7 @@ import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.RollersSubsystem;
 
-public class IntakeAndRollers extends Command {
+public class AutoIntake extends Command {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 
     private RollersSubsystem rollersSubsystem;
@@ -35,9 +34,7 @@ public class IntakeAndRollers extends Command {
     private double desiredHeading;
     private double tx;
     private boolean targetFound;
-    private XboxController xboxController;
     private DigitalInput noteLimitSwitch;
-    private boolean isAuto;
 
     /**
      * Follows a given trajectory for autonomous.
@@ -45,10 +42,11 @@ public class IntakeAndRollers extends Command {
      * @param trajectory Trajectory to follow
      * @param subsystem  Drive subsystem to drive the robot
      */
-    public IntakeAndRollers(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem,
+    public AutoIntake(RollersSubsystem rollersSubsystem, IntakeSubsystem intakeSubsystem,
             IndexSubsystem indexSubsystem,
-            ArmSubsystem armSubsystem, DriveSubsystem driveSubsystem, XboxController xboxController,
-            DigitalInput noteLimitSwitch, boolean isAuto) {
+            ArmSubsystem armSubsystem, DriveSubsystem driveSubsystem,
+            DigitalInput noteLimitSwitch) {
+
         this.rollersSubsystem = rollersSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.armSubsystem = armSubsystem;
@@ -58,9 +56,7 @@ public class IntakeAndRollers extends Command {
         this.indexSpeed = IndexConstants.intakeIndexSpeed;
         this.intakeSpeed = IntakeConstants.intakeSpeed;
         this.armPosition = ArmConstants.lowStop;
-        this.xboxController = xboxController;
         this.noteLimitSwitch = noteLimitSwitch;
-        this.isAuto = isAuto;
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(rollersSubsystem, intakeSubsystem, indexSubsystem, armSubsystem, driveSubsystem);
@@ -97,30 +93,11 @@ public class IntakeAndRollers extends Command {
             // potentially get driver x and y input
             double xSpeed;
             double ySpeed;
-            if (isAuto) {
-                xSpeed = AutoConstants.intakeDriveSpeed;
-                ySpeed = 0;
-            } else {
-                xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
-                ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
-            }
-            // double rotSpeed = -driveSubsystem.getDesiredHeadingSpeed(desiredHeading);
-            double rotSpeed = -MathUtil.applyDeadband(xboxController.getRightX(),
-                    OIConstants.kDriveDeadband);
-            driveSubsystem.drive(xSpeed, ySpeed, rotSpeed, true, true, true);
-        } else {
-            double xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
-            double ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
-            double rotSpeed = -MathUtil.applyDeadband(xboxController.getRightX(),
-                    OIConstants.kDriveDeadband);
-            driveSubsystem.drive(xSpeed, ySpeed, rotSpeed, true, true, true);
+            xSpeed = AutoConstants.intakeDriveSpeed;
+            ySpeed = 0;
+            double rotSpeed = -driveSubsystem.getDesiredHeadingSpeed(desiredHeading);
+            driveSubsystem.drive(xSpeed, ySpeed, rotSpeed, false, true, true);
         }
-
-        double xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
-        double ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
-        double rotSpeed = -MathUtil.applyDeadband(xboxController.getRightX(),
-                OIConstants.kDriveDeadband);
-        driveSubsystem.drive(xSpeed, ySpeed, rotSpeed, true, true, true);
         armSubsystem.setPointArm(armPosition);
     }
 
@@ -137,8 +114,6 @@ public class IntakeAndRollers extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        // command only ends when interrupted
-        SmartDashboard.putBoolean("switch", noteLimitSwitch.get());
         if (noteLimitSwitch.get()) {
             return true;
         }

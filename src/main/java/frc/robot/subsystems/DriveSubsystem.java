@@ -24,6 +24,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.*;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -125,6 +126,8 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
     m_field.setRobotPose(m_odometry.getPoseMeters());
+    Pose2d pose = LimelightHelpers.getBotPose2d_wpiBlue(LimelightConstants.limelightAprilHostName);
+    m_field.setRobotPose(pose);
 
     SmartDashboard.putNumber("heading", getHeading());
   }

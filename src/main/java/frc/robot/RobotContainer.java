@@ -22,6 +22,8 @@ import frc.robot.Constants.LimitSwitchConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.AimAndRev;
 import frc.robot.Commands.Amp;
+import frc.robot.Commands.AutoIntake;
+import frc.robot.Commands.AutoIntakeBackwards;
 import frc.robot.Commands.Index;
 import frc.robot.Commands.IntakeAndRollers;
 import frc.robot.Commands.LEDIntake;
@@ -69,7 +71,8 @@ public class RobotContainer {
          */
         public RobotContainer() {
 
-                NamedCommands.registerCommand("Intake", new IntakeAndRollers(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem,  m_ArmSubsystem, m_robotDrive, m_driverController, secureNoteSwitch, true));
+                NamedCommands.registerCommand("Intake", new AutoIntake(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem,  m_ArmSubsystem, m_robotDrive, secureNoteSwitch));
+                NamedCommands.registerCommand("IntakeBackwards", new AutoIntakeBackwards(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem, m_ArmSubsystem, secureNoteSwitch));
                 NamedCommands.registerCommand("AimAndRev", new AimAndRev(m_robotDrive, m_RollersSubsystem, m_ArmSubsystem, m_ChangeLedSubsystem, m_driverController, secureNoteSwitch));
                 NamedCommands.registerCommand("Shoot", new Index(m_IndexSubsystem, secureNoteSwitch));
                 NamedCommands.registerCommand("Amp", new Amp(m_RollersSubsystem, m_IntakeSubsystem, m_IndexSubsystem,  m_ArmSubsystem, secureNoteSwitch, true));
@@ -80,6 +83,10 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Pathfind to 3", Pathfind.pathFind("Shoot to 3"));
                 NamedCommands.registerCommand("Pathfind from 3", Pathfind.pathFind("3 to Shoot"));
                 NamedCommands.registerCommand("Bottom Corner to Shoot", Pathfind.pathFind("Bottom Corner to Shoot"));
+                NamedCommands.registerCommand("ArmToFloor", new SetArm(m_ArmSubsystem, ArmConstants.lowStop));
+                NamedCommands.registerCommand("ArmToShoot", new SetArm(m_ArmSubsystem, ArmConstants.speakerPos));
+                NamedCommands.registerCommand("FindShootA", Pathfind.pathFindPoint("ShootA"));
+                NamedCommands.registerCommand("FindA", Pathfind.pathFindPoint("A"));
 
                 // Configure the button bindings
                 configureButtonBindings();

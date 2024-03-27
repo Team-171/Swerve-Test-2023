@@ -85,7 +85,7 @@ public class AimAndRev extends Command {
             double limelightX = driveX + LimelightConstants.xOffset * Math.sin(driveHeading) + LimelightConstants.yOffset * Math.cos(driveHeading);
             double limelightY = driveY + LimelightConstants.xOffset * Math.cos(driveHeading) + LimelightConstants.yOffset * Math.sin(driveHeading);
             
-            targetX = limelightX + (targetDistance * Math.cos(targetHeading));
+            targetX = limelightX + (targetDistance * Math.cos(targetHeading)) + 3;
             targetY = limelightY + (targetDistance * Math.sin(targetHeading));
             targetFound = true;
         }
@@ -110,12 +110,11 @@ public class AimAndRev extends Command {
             SmartDashboard.putNumber("targetX", targetX);
             SmartDashboard.putNumber("targetY", targetY);
 
-            shootPosition = (-0.000002 * Math.pow(td, 3))
-                    - (0.000180 * Math.pow(td, 2)) + (0.008983 * td) + 0.672893;
+            shootPosition = (-0.000009 * Math.pow(td, 3)) + (0.000117 * Math.pow(td, 2)) + (0.005344 * td) + 0.683993;
             // shootPosition = 0.703;
-            revSpeed = MathUtil.clamp((targetDistance / 180), 0.75, 1);
+            revSpeed = MathUtil.clamp((targetDistance / 162), 0.75, 1);
         }else{
-            shootPosition = 0.69;
+            shootPosition = ArmConstants.speakerPos;
             double xSpeed = -MathUtil.applyDeadband(xboxController.getLeftY(), OIConstants.kDriveDeadband);
             double ySpeed = -MathUtil.applyDeadband(xboxController.getLeftX(), OIConstants.kDriveDeadband);
             double rotSpeed = -MathUtil.applyDeadband(xboxController.getRightX(),
